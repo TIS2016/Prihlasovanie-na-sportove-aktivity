@@ -1,0 +1,15 @@
+Dátum stretnutia: 4.10.2016
+
+Zoznam prítomných: Buzáš, Ortutay, Reguly, Sadloň, Kuchár
+
+Agenda:
+  Zhodnotenie:
+	- prvé stretnutie	
+
+  Preberané body:
+	- rozdelenie funkcií na projekt
+	- vytvorenie ganttovho diagramu
+	- rozprávanie sa o projekte
+
+  Naplanovanie:
+	- spísanie zoznamu požiadaviek z podkladov od zadávateľa

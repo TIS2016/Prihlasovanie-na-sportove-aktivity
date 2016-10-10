@@ -1,0 +1,31 @@
+Dátum stretnutia: 4.10.2016
+
+Zoznam prítomných: Buzáš, Ortutay, Reguly, Sadloň, Holas
+
+Agenda:
+  Zhodnotenie:
+	- druhé stretnutie
+  - oprava Ganttovho diagramu	
+  - rozdelili sme si funkcie v tíme:
+      Ortutay-dokumentácia
+      Buzáš-manažér komunikácie
+      Reguly-implementácia
+      Sadloň-manažmenť práce
+  
+
+  Preberané body:
+	- github- vysvetlenie všeobecného fungovania
+	- rozdelenie daných rolí na projekte
+	- kontrola Ganttovho diagramu
+  - lepšia komunikácia so zadávateľom
+	- požiadavky na projekt, ktoré boli povedané na prvom stretnutí so zadávateľom
+  - preberali sme admin práva pre pridanie/mazanie/úpravu daných rezervácii v kalendári
+  - možnosť pridania športovej aktivity do kalendára s opakovaním pre viacero týždňov
+  - prihlasovanie užívateľa pomocou AISu - dohodnutie stretnutia s p.Janáčkom 
+
+  Naplanovanie:
+	- odovzdanie Ganttovho diagramu na github do 5.10.2016
+  - komunikovať so zadávateľom pre presnejšiu špecifikáciu projektu
+  - vytvoriť katalóg požiadaviek a poslať ho zadávateľovi na schválenie
+  - pridanie zenhubu do githubu
+  - stretnúť sa s p. Janáčkom
