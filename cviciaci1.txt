@@ -1,0 +1,17 @@
+Dátum stretnutia: 3.10.2016
+
+Zoznam prítomných: Buzáš, Ortutay, Reguly, Sadloň, Holas
+
+Agenda:
+  Zhodnotenie:
+	- prvé stretnutie	
+
+  Preberané body:
+	- dohodnutie každotýždenných stretnutí s cvičiacim
+	- vytvorenie projektu na gite
+	- rozposlanie pozvánok
+	- prehodnotil sa priebeh semestra
+
+  Naplanovanie:
+	- priradenie funkcií jednotlivým členom tímu
+	- spravenie ganttovho diagramu
