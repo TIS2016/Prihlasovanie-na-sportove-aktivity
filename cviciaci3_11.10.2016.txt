@@ -1,27 +1,27 @@
-Dátum stretnutia: 11.10.2016
+DÃ¡tum stretnutia: 11.10.2016
 
-Zoznam prítomnıch: Buzáš, Ortutay, Reguly, Sadlon, Holas
+Zoznam prÃ­tomnÃ½ch: BuzÃ¡Å¡, Ortutay, Reguly, SadloÅˆ, Holas
 
 Agenda:
 	Zhodnotenie:
 		- tretie stretnutie
 	- Ganttov diagram je OK
-	- zhodnotili sme katalóg poiadaviek
-	- všetci majú pridanı Zenhub do Githubu
-	- komunikovali sme s p. Janáckom a ten nás presmeroval na p. Zagibu
+	- zhodnotili sme katalÃ³g poÅ¾iadaviek
+	- vÅ¡etci majÃº pridanÃ½ Zenhub do Githubu
+	- komunikovali sme s p. JanÃ¡ckom a ten nÃ¡s presmeroval na p. Zagibu
 
 	
-	Preberané body: 
+	PreberanÃ© body: 
 		- stretnutie s p. Zagibom ohladom AIS loginu
-		- otázka ci to pôjde na serveri kempelen alebo ktvs.fmph.uniba.sk
-		- bavili sme sa o názvoch zápisních, do názvu je potrebné dat aj dátum stretnutia
-		- všetci sme predstavili svoj prínos projektu za poslednı tıden
-		- prebrali sme jednotlivé uml diagramy, postupne sme si ich rozobrali, co ku kadému treba
+		- otÃ¡zka ci to pÃ´jde na serveri kempelen alebo ktvs.fmph.uniba.sk
+		- bavili sme sa o nÃ¡zvoch zÃ¡pisnÃ­ch, do nÃ¡zvu je potrebnÃ© dat aj dÃ¡tum stretnutia
+		- vÅ¡etci sme predstavili svoj prÃ­nos projektu za poslednÃ½ tÃ½Å¾den
+		- prebrali sme jednotlivÃ© uml diagramy, postupne sme si ich rozobrali, co ku kaÅ¾dÃ©mu treba
 		
 
-	Naplánovanie: 
+	NaplÃ¡novanie: 
 		- odovzdanie UML diagramov na GitHub
-		- opravit názvy zápisníc: do názvu treba vloit dátum stretnutia
-		- opravit zlé odráky v katalógu poiadaviek
-		- zistit kto je správca ktvs.fmph.uniba.sk
-		- hlavná úloha na tento tıden sú tie diagramy
+		- opravit nÃ¡zvy zÃ¡pisnÃ­c: do nÃ¡zvu treba vloÅ¾it dÃ¡tum stretnutia
+		- opravit zlÃ© odrÃ¡Å¾ky v katalÃ³gu poÅ¾iadaviek
+		- zistit kto je sprÃ¡vca ktvs.fmph.uniba.sk
+		- hlavnÃ¡ Ãºloha na tento tÃ½Å¾den sÃº tie diagramy
