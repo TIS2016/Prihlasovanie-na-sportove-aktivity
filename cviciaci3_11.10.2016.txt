@@ -1,0 +1,27 @@
+Dátum stretnutia: 11.10.2016
+
+Zoznam prítomných: Buzáš, Ortutay, Reguly, Sadlon, Holas
+
+Agenda:
+	Zhodnotenie:
+		- tretie stretnutie
+	- Ganttov diagram je OK
+	- zhodnotili sme katalóg požiadaviek
+	- všetci majú pridaný Zenhub do Githubu
+	- komunikovali sme s p. Janáckom a ten nás presmeroval na p. Zagibu
+
+	
+	Preberané body: 
+		- stretnutie s p. Zagibom ohladom AIS loginu
+		- otázka ci to pôjde na serveri kempelen alebo ktvs.fmph.uniba.sk
+		- bavili sme sa o názvoch zápisních, do názvu je potrebné dat aj dátum stretnutia
+		- všetci sme predstavili svoj prínos projektu za posledný týžden
+		- prebrali sme jednotlivé uml diagramy, postupne sme si ich rozobrali, co ku každému treba
+		
+
+	Naplánovanie: 
+		- odovzdanie UML diagramov na GitHub
+		- opravit názvy zápisníc: do názvu treba vložit dátum stretnutia
+		- opravit zlé odrážky v katalógu požiadaviek
+		- zistit kto je správca ktvs.fmph.uniba.sk
+		- hlavná úloha na tento týžden sú tie diagramy
