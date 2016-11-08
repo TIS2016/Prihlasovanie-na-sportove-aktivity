@@ -1,0 +1,24 @@
+Dátum stretnutia: 25.10.2016
+
+Zoznam prítomných: Buzáš, Ortutay, Reguly, Sadloň, Holas
+
+Agenda:
+	Zhodnotenie:
+		- piate stretnutie
+  - opravili sme UML diagramy
+  - odovzdali sme používateľské rozhranie, analýza technológii, dátový model, dekompozícia
+	
+	Preberané body:
+  - prebrali sme prínos každého člena tímu za uplynulý týždeň
+  - skontrolovali sme si opravené UML diagramy - sú OK
+  - takisto sme si skontrolovali:
+   - používateľské rozhranie - je to OK
+   - analýza technológii - je to OK
+   - dátový model - je to OK
+   - dekompozícia - je to OK
+  
+	Naplánovanie:
+  - triedny diagram
+  - testovacie scenáre
+   
+		

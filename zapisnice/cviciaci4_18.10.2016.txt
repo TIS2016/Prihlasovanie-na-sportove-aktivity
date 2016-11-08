@@ -1,0 +1,39 @@
+Dátum stretnutia: 18.10.2016
+
+Zoznam prítomných: Buzáš, Ortutay, Reguly, Sadloň, Holas
+
+Agenda:
+	Zhodnotenie:
+		- štvrté stretnutie
+	- odovzdali sme UML diagramy na Github
+  - názvy zápisníc opravené
+  - taktiež je opravený kotalóg požiadaviek
+	
+	Preberané body: 
+  - prebrali sme prínos každého člena tímu za uplynulý týždeň
+  - znovu sme si skontrolovali finálnu verziu katalógu požiadaviek -> je to už uzavretá časť, všetko je už v poriadku
+  - prešli sme si všetky štyri UML diagramy:
+    - Entitno-relačný:
+      - zhodnotenie celkom fajn
+      - obsahuje veľa polí
+      - čo je to entita účet
+      - zmeniť účet na ais login + reláciu má zmeniť na indetifikuje sa
+    - Use-Case:
+      - include/extend problém -> extend zle pochopený
+      - nedostatok : zaslanie upozornenia ->(email) student 
+      - zmeniť šípky na horných dvoch caseov
+    - Stavový:
+      - je dobre
+      - jednoduchý ale spĺňa podmienky
+    - Sequence:
+      - celkom fajn
+      - zmeniť časové využitie prvkov
+      - porozmýšľať nad alt scénarom
+  - rozprávali sme sa o tom ako odovzdať používateľské rozhranie
+  - dizajn webu - len približný návrh, nie je to závezné, možme to robiť v niejakom toole/nakresliť
+  	
+		
+
+	Naplánovanie: 
+		- opravenie UML diagramov
+		- používateľské rozhranie, analýza technológii, dátový model, dekompozícia
