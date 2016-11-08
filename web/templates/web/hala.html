@@ -1,0 +1,102 @@
+{% extends 'web/base.html' %}
+
+{% block title %} Hala {% endblock %}
+
+
+{% block logo-buttons %}
+    <div class="col-xs-10 col-sm-10">
+        <div class="bg-primary">
+            <p class="text-left">Logo</p>
+
+        </div>
+    </div>
+
+    <div class="col-xs-2 col-sm-2">
+
+        <button type="button" class="btn btn-danger btn-lg" id="delete">Zrus</button>
+        <button type="button" class="btn btn-danger btn-lg" id="save">Ulozit</button>
+    </div>
+
+
+{% endblock %}
+
+
+{% block navigation %}
+    <div class="col-xs-2 col-sm-2" id="sidebar" role="navigation">
+        <ul class="nav nav-pills nav-stacked">
+            <li class="active"><a href="{% url 'hala' %}">Hala</a></li>
+            <li><a href="{% url 'posilnovna' %}">Posilnovna</a></li>
+            <li><a href="{% url 'stena' %}">Stena</a></li>
+            <li><a href="{% url 'sauna' %}">Sauna</a></li>
+        </ul>
+    </div>
+
+    <div class="col-xs-3 col-sm-offset-3">
+        <button type="button" class="btn btn-primary btn-sm" id="prev"> <</button>
+        <input type="text" id="datepicker">
+        <button type="button" class="btn btn-primary btn-sm" id="next"> ></button>
+        <div id="div">
+
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block week-grid %}
+    <!-- main area -->
+    <div class="col-xs-12 col-sm-10">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Cas</th>
+                <th>Pondelok</th>
+                <th>Utorok</th>
+                <th>Streda</th>
+                <th>Stvrtok</th>
+                <th>Piatok</th>
+            <tbody>
+
+            {% for time in times %}
+                <tr>
+                    <td>
+                        <label class="label label-primary">{{ time }}</label>
+                    </td>
+                    <td>
+                        <div class="checkbox" id="{{ forloop.counter0|multiply:5|add:"1" }}">
+                            <input type="checkbox" value=""><span class="badge">0/0</span>&nbsp;<span
+                                class="badge id" onclick="show_termin_info({{ forloop.counter0|multiply:5|add:"1" }} )" style="cursor: pointer;">i</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="checkbox" id="{{ forloop.counter0|multiply:5|add:"2" }}">
+                            <input type="checkbox" value=""><span class="badge">0/0</span>&nbsp;<span
+                                class="badge id" onclick="show_termin_info({{ forloop.counter0|multiply:5|add:"2" }} )" style="cursor: pointer;">i</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="checkbox" id="{{ forloop.counter0|multiply:5|add:"3" }}">
+                            <input type="checkbox" value=""><span class="badge">0/0</span>&nbsp;<span
+                                class="badge id" onclick="show_termin_info({{ forloop.counter0|multiply:5|add:"3" }} )" style="cursor: pointer;">i</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="checkbox" id="{{ forloop.counter0|multiply:5|add:"4" }}">
+                            <input type="checkbox" value=""><span class="badge">0/0</span>&nbsp;<span
+                                class="badge id" onclick="show_termin_info({{ forloop.counter0|multiply:5|add:"4" }} )" style="cursor: pointer;">i</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="checkbox" id="{{ forloop.counter0|multiply:5|add:"5" }}">
+                            <input type="checkbox" value=""> <span class="badge">0/0</span>&nbsp;<span
+                                class="badge id" onclick="show_termin_info({{ forloop.counter0|multiply:5|add:"5" }} )" style="cursor: pointer;">i</span>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+

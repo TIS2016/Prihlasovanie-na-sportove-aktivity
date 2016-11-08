@@ -1,0 +1,18 @@
+{% extends 'web/termin.html' %}
+
+{% block title %} Terminy {% endblock %}
+
+
+{% block termin %}
+
+    <h1>Terminy Sauna</h1>
+
+    {% for termin in terminy %}
+
+        <p>
+            {{ termin }}
+        </p>
+
+    {% endfor %}
+
+{% endblock %}
