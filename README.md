@@ -12,3 +12,6 @@
 - nainstalovane django 1.10 (latest)
 - spustenie prikazu vo windows cmd: 
 - C:\Python34\python.py \path\to\the\projects\manage.py runserver
+- dalej v prehliadaci: 
+- login URL: http://127.0.0.1:8000/
+- domov URL: http://127.0.0.1:8000/domov
