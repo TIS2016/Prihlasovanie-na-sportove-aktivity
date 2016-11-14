@@ -160,23 +160,33 @@
             change_bg_color();
         });
 
-        function select_red_by_day(day){
-            if (day < 6 && day > 0){
+        function select_red_by_day(day) {
+
+            if (day < 6 && day > 0) {
+                var ix = 0;
                 for (var i = 1; i <= 110; i++) {
-                    if (i == 1){
-                    }
                     if (Math.floor(i / day)) {
                         document.getElementById(i.toString()).style.background = "red";
                         day += 5;
                     }
-                    else{
-                        document.getElementById(i.toString()).style.background = "white";
+                    else {
+                        if(document.getElementById(i.toString()).style.backgroundColor == "red"){
+                            if(ix % 2 == 0) {
+                                document.getElementById(i.toString()).style.background = "#F9F9F9";
+                            }
+                            else{
+                                document.getElementById(i.toString()).style.background = "white";
+                            }
+                            ix += 1;
+                        }
                     }
                 }
             }
-            else{
+            else {
                 for (var i = 1; i <= 110; i++) {
-                    document.getElementById(i.toString()).style.background = "white";
+                    if(document.getElementById(i.toString()).style.backgroundColor == "red"){
+                        document.getElementById(i.toString()).style.background = "white";
+                    }
                 }
             }
         };
