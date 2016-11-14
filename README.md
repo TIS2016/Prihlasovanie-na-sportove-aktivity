@@ -9,9 +9,16 @@
  
 # Requirements
 - nainstalovany python 3.4 
-- nainstalovane django 1.10 (latest)
-- spustenie prikazu vo windows cmd: 
-- C:\Python34\python.py \path\to\the\projects\manage.py runserver
-- dalej v prehliadaci: 
+- nainstalovat kniznicu PyMySQL (pip install pymysql)
+- stiahnut a nainstalovat http://dev.mysql.com/downloads/installer/
+- vytvorena databaza alebo import existujucej
+- nainstalovane django 1.10 (pip install django)
+
+spustenie prikazu vo windows cmd: 
+- C:\Python34\python.py C:\Users\YOUR_NAME\Documents\GitHub\Prihlasovanie-na-sportove-aktivity\manage.py runserver
+
+dalej v prehliadaci: 
 - login URL: http://127.0.0.1:8000/
 - domov URL: http://127.0.0.1:8000/domov
+
+
