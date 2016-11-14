@@ -1,0 +1,24 @@
+Dátum stretnutia: 19.10.2016
+
+Zoznam prítomných: Buzáš, Ortutay, Reguly, Sadloň
+
+Agenda:
+  Zhodnotenie:
+	 - štvrté stretnutie
+    - zhodnotili sme náš prínos za minulý týždeň a či sme spokojní/nespokojní so svojou prácou
+
+  Preberané body:
+    - spoločne sme si prerozdelili úlohy do najbližšieho stretnutia s cvičiacim
+      - rozdelenie práce pre používateľské rozhranie, analýza technológii, dátového modelu a dekompozície
+    - prebrali sme si prácu, ktorú sme spravili za minulý týždeň a čo všetko treba ešte doopravovať
+    - opraviť je potrebné UML diagramy entitno-relačný, sekvenčný a use-case
+      - stavový je Ok
+    - bavili sme sa o používateľskom rozhraní
+      - ako bude približne vyzerať    
+
+  Naplanovanie:
+    - opravenie UML diagramov
+    - používateľské rozhranie, analýza technológii, dátový model a dekompozícia
+  
+	
+  

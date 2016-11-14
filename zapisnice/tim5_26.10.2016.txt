@@ -1,0 +1,22 @@
+Dátum stretnutia: 26.10.2016
+
+Zoznam prítomných: Buzáš, Ortutay, Reguly, Sadloň
+
+Agenda:
+  Zhodnotenie:
+	 - piate stretnutie
+    - zhodnotili sme náš prínos za minulý týždeň a či sme spokojní/nespokojní so svojou prácou
+
+  Preberané body:
+    - spoločne sme si prerozdelili úlohy do najbližšieho stretnutia s cvičiacim
+      - rozdelenie práce pre triedny diagram a testovacie scenáre
+    - prebrali sme si prácu, ktorú sme spravili za minulý týždeň a čo všetko treba ešte doopravovať
+      - používateľské rozhranie, analýza technológii, dátový model a dekompozícia sú OK
+      - takisto už finálne verzie UML diagramov sú OK
+
+  Naplanovanie:
+    - triedny diagram a testovacie scénare
+    
+  
+	
+  

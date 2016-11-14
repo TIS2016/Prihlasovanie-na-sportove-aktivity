@@ -1,0 +1,22 @@
+Dátum stretnutia: 8.11.2016
+
+Zoznam prítomných: Buzáš, Ortutay, Reguly, Sadloň, Holas
+
+Agenda:
+	Zhodnotenie:
+		- šieste stretnutie
+  - skontrolovali sme triedny diagram
+  - takisto sme spravili a odovzdali aj testovacie scenáre
+	
+	Preberané body:
+  - prebrali sme prínos každého člena tímu za uplynulý týždeň
+  - pozreli sme nami spravený triedny diagram, ktorý je OK
+  - do budúcna sa zlepšiť na písaní tímových zápisníc
+  - skontrolovali sme testovacie scénare, ktoré sú Ok, ale chcelo by to ešte dorobiť viac negatívnych prípadov
+  - keďže sme všetko spravili do termínu tak už len posledná vec je skompletizovaný návrh
+  - znovu sme riešili Ais login, či sa tam dá nejako zistiť či užívateľ je študent alebo učiteľ
+    - treba sa stretnúť s p. Zagibom a dokončiť túto problematiku
+  
+	Naplánovanie:
+  - skompletizovaný návrh
+  - vyriešený Ais login

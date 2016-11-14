@@ -1,0 +1,26 @@
+Dátum stretnutia: 9.10.2016
+
+Zoznam prítomných: Buzáš, Ortutay, Reguly, Sadloň
+
+Agenda:
+  Zhodnotenie:
+	 - šieste stretnutie
+    - zhodnotili sme náš prínos za minulé dva týždne a či sme spokojní/nespokojní so svojou prácou
+
+  Preberané body:
+    - spoločne sme si prerozdelili úlohy do najbližšieho stretnutia s cvičiacim
+      - začiatok implementácie
+      - Ais login
+    - prebrali sme si prácu, ktorú sme spravili za minulý týždeň a čo všetko treba ešte doopravovať
+      - triedny diagram je OK
+      - takisto aj testovacie scenáre sú OK
+        - tieto by bolo ešte vhodné obohatiť o negatívne prípady správania sa aplikácie
+
+  Naplanovanie:
+    - skompletizovaný návrh
+    - vyriešený Ais login
+    - začatá implementácia aplikácie
+    
+  
+	
+  

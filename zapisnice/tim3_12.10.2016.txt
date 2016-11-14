@@ -1,0 +1,23 @@
+Dátum stretnutia: 12.10.2016
+
+Zoznam prítomných: Buzáš, Ortutay, Reguly, Sadloň
+
+Agenda:
+  Zhodnotenie:
+	 - tretie stretnutie
+    - zhodnotili sme náš prínos za minulý týždeň a či sme spokojní/nespokojní so svojou prácou
+
+  Preberané body:
+    - spoločne sme si prerozdelili úlohy do najbližšieho stretnutia s cvičiacim
+      - v tomto spočívalo hlavne rozdelenie si UML diagramov a ich spravenie
+    - prebrali sme si prácu, ktorú sme spravili za minulý týždeň a čo všetko treba ešte doopravovať
+    - opraviť je potrebné názvy zápisníc
+    - spoločne sme riešili Ais login, komunikáciu s p. Zagibom a p. Janáčkom 
+
+  Naplanovanie:
+    - spravenie UML diagramov
+    - oprava nedostatočnej práce z minulého týždňa
+    - úpravy názvov zápisníc a vecí okolo githubu, priečinky v branchi dokumentácia
+  
+	
+  
