@@ -1,13 +1,47 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-    <meta charset="UTF-8">
-    <title>Prihlásenie</title>
+   <!-- Bootstrap core CSS -->
+     <link href=" {% static 'web/css/bootstrap.css' %} " rel="stylesheet">
+    <title>KTVS | Prihlasovanie</title>
 </head>
+
+
+
 <body>
-    <h1>Vitajte na stranke prihlasovani na sportove aktivity</h1>
-    <form action="https://login.uniba.sk/">
-        <input type="submit" value="Prihlasit" />
-    </form>
+
+<div class="navbar navbar-inverse navbar-static-top">
+        <a href="" class="navbar-brand"><b>Prihlasovanie na športové aktivity KTVŠ</b></a>
+</div>
+
+<div class="login-content" style="max-width: 30em; margin:auto; margin-top: 4%;">
+    <img src="{% static 'web/images/loginSportPicture5.png' %}" alt="Picture">
+
+    <p><strong>KTVŠ</strong> Systém pre rezerváciu miestností je určený pre študentov a učiteľov Univerzity Komenského, pomocou ktorého je možné rezervovať si miestnosti pre športové aktivity. Pre jeho použitie je nutné prihlásiť sa údajmi rovnakými, ako do systému AIS. </p>
+
+    <hr>
+
+     <form action="https://login.uniba.sk/">
+                <button class="btn btn-danger btn-lg" type="submit" style="margin-left:140px;">Prihlásiť sa</button>
+            </form>
+
+</div>
+
+
+
+
+<ul class="list-inline">
+    <li> <a href="https://uniba.sk/" target="blank" class="btn btn-link" tableindex="0" role="button" >Unverzita komenskeho</a> </li>
+    <li> <a href="http://ktvs.fmph.uniba.sk/" target="blank" class="btn btn-link">KTVŠ</a> </li>
+</ul>>
+
+
+
+
+
+
+
 </body>
 </html>

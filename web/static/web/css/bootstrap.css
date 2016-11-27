@@ -61,7 +61,7 @@ dfn {
 }
 h1 {
   margin: .67em 0;
-  font-size: 2em;
+  font-size: 1em;
 }
 mark {
   color: #000;
@@ -1415,7 +1415,7 @@ a.bg-danger:focus {
 ul,
 ol {
   margin-top: 0;
-  margin-bottom: 10px;
+  margin-bottom: 0;
 }
 ul ul,
 ol ul,
@@ -1431,6 +1431,15 @@ ol ol {
   padding-left: 0;
   margin-left: -5px;
   list-style: none;
+
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  background-color: #efefef;
+  text-align: center;
+
 }
 .list-inline > li {
   display: inline-block;
@@ -3343,7 +3352,7 @@ fieldset[disabled] .btn-warning.focus {
 }
 .btn-danger {
   color: #fff;
-  background-color: #d9534f;
+  background-color: #b3231b;
   border-color: #d43f3a;
 }
 .btn-danger:focus,
@@ -3400,7 +3409,7 @@ fieldset[disabled] .btn-danger.focus {
 }
 .btn-link {
   font-weight: normal;
-  color: #337ab7;
+  color: #555555;
   border-radius: 0;
 }
 .btn-link,
@@ -4589,11 +4598,11 @@ fieldset[disabled] .navbar-default .btn-link:focus {
   color: #ccc;
 }
 .navbar-inverse {
-  background-color: #222;
+  background-color: #b3231b;
   border-color: #080808;
 }
 .navbar-inverse .navbar-brand {
-  color: #9d9d9d;
+  color: #e1e1e1;
 }
 .navbar-inverse .navbar-brand:hover,
 .navbar-inverse .navbar-brand:focus {
@@ -4995,7 +5004,7 @@ a.badge:focus {
   }
   .jumbotron h1,
   .jumbotron .h1 {
-    font-size: 63px;
+    font-size: 20px;
   }
 }
 .thumbnail {
@@ -5486,6 +5495,10 @@ button.list-group-item-danger.active:focus {
   border-top: 1px solid #ddd;
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 .panel > .list-group,
 .panel > .panel-collapse > .list-group {
