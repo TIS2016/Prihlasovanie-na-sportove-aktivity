@@ -1,6 +1,9 @@
 from django.template.response import TemplateResponse
 from django.template.defaulttags import register
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+
+from web.models import Reservation, Room, Administrator
 
 
 @register.filter
@@ -33,19 +36,69 @@ times = [
     "18:30-19:00",
 ]
 
+
+def index(request):
+    """
+    View function to handle Ajax request for image Link.
+    :param request: Ajax request data.
+    :return: image URL.
+    """
+
+
 # <-----------------------------> HALA <------------------------------------------>
+@csrf_exempt
 def hala(request):
+    room = Room.objects.get(name='hala')
+    capacity = room.capacity
+
     context = {
         "times": times,
+        "reservations": Reservation.objects.filter(room=room),
+        "capacity": capacity,
+
     }
-    return TemplateResponse(request, 'web/hala.html', context)
+
+    if request.is_ajax():
+        import json
+
+        print("DATA", request.POST.get('d1'))
+        print("DATA", request.POST.get('d2'))
+        print("DATA", request.POST.get('d3'))
+        print("DATA", request.POST.get('d4'))
+        print("DATA", request.POST.get('d5'))
+
+
+
+        response_data = {
+            "times": times,
+            "reservations": [5,5,6,3,4,8],
+            "capacity": capacity,
+        }
+        return HttpResponse(
+            json.dumps(response_data),
+            content_type="application/json"
+        )
+
+        # return TemplateResponse(request, 'web/hala.html', response_data)
+
+        # try:
+        #     monday_date = request.POST['monday_date']
+        #     print("gabaj", monday_date)
+        #
+        # except:
+        #     e = sys.exc_info()
+        #     return HttpResponse(e)
+        # return HttpResponse(sucess)
+        # return TemplateResponse(request, 'web/hala.html', context)
+    else:
+        # pass
+        return TemplateResponse(request, 'web/hala.html', context)
 
 
 @csrf_exempt
 def hala_terminy(request):
-
     context = {
-        "terminy" : request.POST.getlist('termins_id[]'),
+        "terminy": request.POST.getlist('termins_id[]'),
     }
     return TemplateResponse(request, 'web/hala_terminy.html', context)
 
@@ -67,9 +120,8 @@ def posilnovna(request):
 
 @csrf_exempt
 def posilnovna_terminy(request):
-
     context = {
-        "terminy" : request.POST.getlist('termins_id[]'),
+        "terminy": request.POST.getlist('termins_id[]'),
     }
     return TemplateResponse(request, 'web/posilnovna_terminy.html', context)
 
@@ -91,9 +143,8 @@ def stena(request):
 
 @csrf_exempt
 def stena_terminy(request):
-
     context = {
-        "terminy" : request.POST.getlist('termins_id[]'),
+        "terminy": request.POST.getlist('termins_id[]'),
     }
     return TemplateResponse(request, 'web/stena_terminy.html', context)
 
@@ -115,9 +166,8 @@ def sauna(request):
 
 @csrf_exempt
 def sauna_terminy(request):
-
     context = {
-        "terminy" : request.POST.getlist('termins_id[]'),
+        "terminy": request.POST.getlist('termins_id[]'),
     }
     return TemplateResponse(request, 'web/sauna_terminy.html', context)
 
