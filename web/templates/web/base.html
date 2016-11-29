@@ -19,6 +19,29 @@
 
 <body>
 
+<!-- Modal -->
+<div class="modal fade" id="getCodeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"> NAHLAD TERMINU </h4>
+            </div>
+            <div class="modal-body" id="getCode" style="overflow-y: scroll;" >
+                //ajax success content here.
+                {{ pocet }}
+
+            </div>
+            <div class="form-group">
+                <label for="comment">Poznamka pre odhlasenie:</label>
+                <textarea class="form-control" rows="5" id="comment"></textarea>
+            </div>
+            <button type="button" class="btn btn-danger btn-lg" id="delete">Odhlasit</button>
+        </div>
+    </div>
+</div>
+
 
 <div class="page-container">
     <div class="container-fluid">
@@ -34,19 +57,112 @@
 
         {% endblock %}
 
-
         <script>
+            var thisIsAnObject;
+
+            function mod(n, m) {
+                return ((n % m) + m) % m;
+            }
+            function getCrtfCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            var windowObjectReference;
+            var csrftoken = getCrtfCookie('csrftoken');
+
             // function which open particular day-lesson in new window
             function show_termin_info(id) {
                 var dimensions = 'width=500,height=300,left=0,top=100,screenX=0,screenY=100';
+
+                var day = id % 5;
+
+                var datum = null;
+
+                var array = document.getElementById('datepicker').value.split('/');
+                // get 5 days of the week
+                var d1 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
+                var d2 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
+                var d3 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
+                var d4 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
+                var d5 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
+
+                var md1 = d1.previous().monday();
+                var md2 = d2.previous().monday();
+                var md3 = d3.previous().monday();
+                var md4 = d4.previous().monday();
+                var md5 = d5.previous().monday();
+
+
+                var dd1 = md1;
+                var dd2 = md2.add(1).days();
+                var dd3 = md3.add(2).days();
+                var dd4 = md4.add(3).days();
+                var dd5 = md5.add(4).days();
+
+                switch (day) {
+                    case 1:
+                        datum = dd1;
+                        console.log("pon", dd1);
+                        break;
+                    case 2:
+                        datum = dd2;
+                        console.log("ut", dd2);
+                        break;
+                    case 3:
+                        datum = dd3;
+                        console.log("streda", dd3);
+                        break;
+                    case 4:
+                        datum = dd4;
+                        console.log("stvrtok", dd4);
+                        break;
+                    case 0:
+                        datum = dd5;
+                        console.log("pia", dd5);
+                        break;
+
+                }
+
                 $.ajax({
-                    url: 'termin/' + id,
-                    type: 'GET', // This is the default though, you don't actually need to always mention it
-                    success: function (data) {
-                        window.open(this.url, 'termin_info', dimensions);
+                    url: 'termin/' + id + '/',
+                    type: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: csrftoken,
+                        datum: datum,
+
                     },
-                    failure: function (data) {
-                        alert('Got an error dude');
+                    success: function (json) {
+
+                        thisIsAnObject = json['reservations'];
+
+//                        if (windowObjectReference) {
+//                            windowObjectReference.close();
+//                        }
+//                        windowObjectReference = window.open(this.url, 'termin_info', dimensions);
+
+
+                        $("#getCode").html(json['pocet']);
+                        $("#getCodeModal").modal('show');
+
+
+                        var res = json['reservations'];
+                        var capacity = json['capacity'];
+
+                    },
+                    error: function (xhr, errmsg, err) {
+                        console.log("Error " + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
                     }
                 });
             }
@@ -73,6 +189,8 @@
 
 <script src="{% static 'web/js/date.js' %}"></script>
 
+<!--<script src="{% static 'web/js/jquery.min.js' %}"></script>-->
+
 <script src=" {% static 'web/js/bootstrap.min.js' %} "></script>
 <!--IE10 viewport hack for Surface/desktop Windows 8 bug -->
 {#
@@ -89,6 +207,7 @@
             return ((n % m) + m) % m;
         }
 
+        // fnction to get csrftoken from cookies which is used to comunicate with wsgi protocol
         function getCookie(name) {
             var cookieValue = null;
             if (document.cookie && document.cookie != '') {
@@ -105,32 +224,35 @@
             return cookieValue;
         }
 
+
         // jquery datepicker added to input text with id "datepicker"
         $(function () {
+
             $("#datepicker").datepicker({
                 onSelect: function () {
                     $(this).change();
                 }
+                // when some date is selected then send request and re-render data
             }).on("change", function () {
+                // parse datepicker's date
                 var array = document.getElementById('datepicker').value.split('/')
                 var d = new Date(array[2], array[1], array[0]);
                 var day = mod((d.getDay() - 2), 7);
+                // change old selected day --> red background to white
                 for (var i = 1; i <= 110; i++) {
                     if (document.getElementById(i.toString()).style.backgroundColor == "red") {
                         document.getElementById(i.toString()).style.background = "white";
                     }
                 }
+                // again render red bg
                 select_red_by_day(day);
 
-
+                // get 5 days of the week
                 var d1 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
                 var d2 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
                 var d3 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
                 var d4 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
                 var d5 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
-
-
-                console.log(d1.getDay());
                 if (d1.getDay() != 1) {
                     var md1 = d1.previous().monday();
                     var md2 = d2.previous().monday();
@@ -145,54 +267,41 @@
                     var md4 = d4;
                     var md5 = d5;
                 }
-
                 var dd2 = md2.add(1).days();
                 var dd3 = md3.add(2).days();
                 var dd4 = md4.add(3).days();
                 var dd5 = md5.add(4).days();
-                console.log(md1 + "|" + dd2 + "|" + dd3 + "|" + dd4 + "|" + dd5);
-
-
-                var url = window.location.href;
-
-
-                var data = new FormData();
-                data.append('d1', md1);
-                data.append('d2', dd2);
-                data.append('d3', dd3);
-                data.append('d4', dd4);
-                data.append('d5', dd5);
-
-                console.log(data);
-
-                var csrftoken = getCookie('csrftoken');
+                // function which send request for data
                 function get_db_data() {
+                    var csrftoken = getCookie('csrftoken');
                     $.ajax({
-                        url : window.location.href, // the endpoint,commonly same url
-                               type : "POST", // http method
-                               data : {
-                                   csrfmiddlewaretoken : csrftoken,
-                                   d1 : md1,
-                                   d2 : dd2,
-                                   d3 : dd3,
-                                   d4 : dd4,
-                                   d5 : dd5,
-                         }, // data sent with the post request
+                        url: window.location.href, // the endpoint,commonly same url
+                        type: "POST", // http method
+                        data: {
+                            csrfmiddlewaretoken: csrftoken,
+                            d1: md1,
+                            d2: dd2,
+                            d3: dd3,
+                            d4: dd4,
+                            d5: dd5,
+                        },
+                        // when success then get data from response and re-render data on page
                         success: function (json) {
-                            console.log(json); // another sanity check
-
+                            alert(json['reservations'])
+                            console.log(json);
                             var res = json['reservations'];
                             var capacity = json['capacity'];
                             for (var i = 0; i < res.length; i++) {
-                                document.getElementById((i+1).toString()).children[1].innerHTML = res[i] + "/" + capacity;
+                                document.getElementById((i + 1).toString()).children[1].innerHTML = res[i] + "/" + capacity;
                             }
                         },
-                         error : function(xhr,errmsg,err) {
-                         console.log("Error "+xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-                         }
+                        error: function (xhr, errmsg, err) {
+                            console.log("Error " + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                        }
                     });
                 }
 
+                // fucntion call
                 get_db_data();
             });
         });
@@ -213,11 +322,28 @@
         }
         document.getElementById('datepicker').value = date_today();
 
+//----------------------------------------------------------------------------------------------------------------------------------------
+
         // this function executes when "Zrus" button clicked and change number of people in lesson
         $("#delete").click(function () {
             document.getElementById('1').children[1].innerHTML = "9/9";
 
         });
+
+        // this function executes when "Uloz" button clicked and opened new window with pre-submit info
+        $("#save").click(function () {
+            var terminy = grab_checked();
+            var postUrl = "terminy/"
+            if (terminy != null) {
+                $.post(postUrl, {termins_id: terminy}, function (response) {
+                    window.open(postUrl, 'terminy', 'width=500,height=300,left=0,top=100,screenX=0,screenY=100').document.write(response);
+                });
+            }
+        });
+
+
+//----------------------------------------------------------------------------------------------------------------------------------------
+
 
         // this will grab checked checkboxes and will return id's of their div element
         function grab_checked() {
@@ -240,16 +366,6 @@
             }
         }
 
-        // this function executes when "Uloz" button clicked and opened new window with pre-submit info
-        $("#save").click(function () {
-            var terminy = grab_checked();
-            var postUrl = "terminy/"
-            if (terminy != null) {
-                $.post(postUrl, {termins_id: terminy}, function (response) {
-                    window.open(postUrl, 'terminy', 'width=500,height=300,left=0,top=100,screenX=0,screenY=100').document.write(response);
-                });
-            }
-        });
         // next ( ">" ) button clicked increase value in input text
         $('#next').click(function () {
             var date = $('#datepicker').datepicker('getDate');
@@ -324,7 +440,7 @@
 
 
         function do_stuff() {
-//            get_numbers();
+
             change_bg_color();
             logic_division();
         }

@@ -46,8 +46,13 @@
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 {#<script src=" {% static 'web/js/ie10-viewport-bug-workaround.js' %} "></script>#}
 
-{% block js %}
 
-{% endblock %}
+<script>
+
+    var myVariable = window.opener.thisIsAnObject;
+    document.getElementById("data").value = myVariable;
+    console.log(myVariable);
+
+</script>
 
 </html>

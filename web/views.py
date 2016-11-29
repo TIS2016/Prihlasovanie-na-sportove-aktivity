@@ -3,6 +3,7 @@ from django.template.defaulttags import register
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.core import serializers
 
 from web.models import Reservation, Room, Administrator
 
@@ -37,6 +38,21 @@ times = [
     "18:30-19:00",
 ]
 
+months = {
+    "Jan": '01',
+    "Feb": '02',
+    "Mar": '03',
+    "Apr": '04',
+    "May": '05',
+    "Jun": '06',
+    "Jul": '07',
+    "Aug": '08',
+    "Sep": '09',
+    "Okt": '10',
+    "Nov": '11',
+    "Dec": '12'
+}
+
 
 def index(request):
     """
@@ -47,12 +63,10 @@ def index(request):
 
 
 # <-----------------------------> HALA <------------------------------------------>
-
+@csrf_exempt
 def hala(request):
     room = Room.objects.get(name='hala')
     capacity = room.capacity
-
-
 
     context = {
         "times": times,
@@ -60,31 +74,41 @@ def hala(request):
         "capacity": capacity,
 
     }
+    if request.method == 'POST':
+        if request.is_ajax():
+            # print("DATA", request.POST.get('d1'))
 
-    if request.is_ajax():
-        import json
+            mon = str(request.POST.get('d1')).strip().split()
+            tue = str(request.POST.get('d2')).strip().split()
+            wed = str(request.POST.get('d3')).strip().split()
+            thu = str(request.POST.get('d4')).strip().split()
+            fri = str(request.POST.get('d5')).strip().split()
 
-        print("DATA", request.POST.get('d1'))
-        print("DATA", request.POST.get('d2'))
-        print("DATA", request.POST.get('d3'))
-        print("DATA", request.POST.get('d4'))
-        print("DATA", request.POST.get('d5'))
+            # print(months.get(mon[1]), mon[2], mon[3])
+
+            mon = "{}-{}-{}".format(mon[3], months.get(mon[1]), mon[2])
+            tue = "{}-{}-{}".format(tue[3], months.get(tue[1]), tue[2])
+            wed = "{}-{}-{}".format(wed[3], months.get(wed[1]), wed[2])
+            thu = "{}-{}-{}".format(thu[3], months.get(thu[1]), thu[2])
+            fri = "{}-{}-{}".format(fri[3], months.get(fri[1]), fri[2])
+
+            result = list()
+            for time in times:
+                for day_date in [mon, tue, wed, thu, fri]:
+                    r = Reservation.objects.filter(date=day_date, time=time, room=room).count()
+                    result.append(r)
+
+            response_data = {
+                "reservations": result,
+                "capacity": capacity,
+
+            }
+            return JsonResponse(response_data)
+
+    # Get goes here
+    return TemplateResponse(request, 'web/hala.html', context)
 
 
-
-        response_data = {
-            "times": times,
-            "reservations": [5,5,6,3,4,8],
-            "capacity": capacity,
-        }
-        return JsonResponse(response_data)
-
-    else:
-        # pass
-        return TemplateResponse(request, 'web/hala.html', context)
-
-
-@csrf_exempt
 def hala_terminy(request):
     context = {
         "terminy": request.POST.getlist('termins_id[]'),
@@ -92,10 +116,21 @@ def hala_terminy(request):
     return TemplateResponse(request, 'web/hala_terminy.html', context)
 
 
+@csrf_exempt
 def hala_termin(request, termin_id):
     context = {
         "termin_id": termin_id,
     }
+    if request.is_ajax():
+        print("datum", request.POST.get('datum'))
+
+        response_data = {
+            "times": times,
+            "reservations": [5, 5, 6, 3, 4, 8],
+            "pocet": 9,
+        }
+        return JsonResponse(response_data)
+
     return TemplateResponse(request, 'web/hala_termin.html', context)
 
 
@@ -107,7 +142,6 @@ def posilnovna(request):
     return TemplateResponse(request, 'web/posilnovna.html', context)
 
 
-@csrf_exempt
 def posilnovna_terminy(request):
     context = {
         "terminy": request.POST.getlist('termins_id[]'),
@@ -130,7 +164,6 @@ def stena(request):
     return TemplateResponse(request, 'web/stena.html', context)
 
 
-@csrf_exempt
 def stena_terminy(request):
     context = {
         "terminy": request.POST.getlist('termins_id[]'),
@@ -153,7 +186,6 @@ def sauna(request):
     return TemplateResponse(request, 'web/sauna.html', context)
 
 
-@csrf_exempt
 def sauna_terminy(request):
     context = {
         "terminy": request.POST.getlist('termins_id[]'),
