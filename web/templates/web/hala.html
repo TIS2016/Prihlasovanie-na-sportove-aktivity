@@ -1,28 +1,19 @@
 {% extends 'web/base.html' %}
-
+{% load static %}
 {% block title %} Hala {% endblock %}
 
 
-{% block logo-buttons %}
-    <div class="col-xs-10 col-sm-10">
-        <div class="bg-primary">
-            <p class="text-left">Logo</p>
 
-        </div>
-    </div>
 
+
+
+
+{% block logo-nav %}
+<div class = "row">
     <div class="col-xs-2 col-sm-2">
-
-        <button type="button" class="btn btn-danger btn-lg" id="delete">Zrus</button>
-        <button type="button" class="btn btn-danger btn-lg" id="save">Ulozit</button>
-    </div>
-
-
-{% endblock %}
-
-
-{% block navigation %}
-    <div class="col-xs-2 col-sm-2" id="sidebar" role="navigation">
+      <br>
+    <img src="{% static 'web/images/logo_UK.png' %}" alt="logo UK">
+      <br><br>
         <ul class="nav nav-pills nav-stacked">
             <li class="active"><a href="{% url 'hala' %}">Hala</a></li>
             <li><a href="{% url 'posilnovna' %}">Posilnovna</a></li>
@@ -31,20 +22,45 @@
         </ul>
     </div>
 
-    <div class="col-xs-3 col-sm-offset-3">
-        <button type="button" class="btn btn-primary btn-sm" id="prev"> <</button>
-        <input type="text" id="datepicker">
-        <button type="button" class="btn btn-primary btn-sm" id="next"> ></button>
-        <div id="div">
 
-        </div>
-    </div>
+
+
+
+
 {% endblock %}
+
+
+
 
 
 {% block week-grid %}
     <!-- main area -->
     <div class="col-xs-12 col-sm-10">
+         <div class="col-xs-12 col-sm-12">
+            <p style = "text-align: right;">Maria Tucna &nbsp;&nbsp;<a href="#" alt="odhlasit">Odhlásiť </a>
+            <br><br>
+            </p>
+
+        </div>
+
+
+        <div class="col-xs-10 col-sm-10">
+            <div style="text-align: center;">
+            <button type="button" class="btn btn-primary btn-sm" id="prev"> <</button>
+            <input type="text" id="datepicker">
+            <button type="button" class="btn btn-primary btn-sm" id="next"> ></button>
+            </div>
+        </div>
+
+        <div class="col-xs-2 col-sm-2">
+           <button type="button" class="btn btn-danger btn-lg" id="delete">Zrus</button>&nbsp;&nbsp;&nbsp;
+        <button type="button" class="btn btn-danger btn-lg" id="save">Ulozit</button>
+            <br>
+        </div>
+
+
+
+
         <table class="table table-striped">
             <thead>
             <tr>
@@ -96,7 +112,9 @@
 
             </tbody>
         </table>
+
     </div>
+</div>
 {% endblock %}
 
 
