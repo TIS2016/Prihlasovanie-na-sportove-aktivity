@@ -3,6 +3,8 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.hala, name='hala'),
+    url(r'^termin/(?P<termin_id>\d+)/', views.hala_termin, name='hala_termin'),
+    url(r'^terminy/', views.hala_terminy, name='hala_terminy'),
 
     url(r'^hala/$', views.hala, name='hala'),
     url(r'^hala/termin/(?P<termin_id>\d+)/', views.hala_termin, name='hala_termin'),

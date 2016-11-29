@@ -2,6 +2,7 @@ from django.template.response import TemplateResponse
 from django.template.defaulttags import register
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from django.http import JsonResponse
 
 from web.models import Reservation, Room, Administrator
 
@@ -46,10 +47,12 @@ def index(request):
 
 
 # <-----------------------------> HALA <------------------------------------------>
-@csrf_exempt
+
 def hala(request):
     room = Room.objects.get(name='hala')
     capacity = room.capacity
+
+
 
     context = {
         "times": times,
@@ -74,22 +77,8 @@ def hala(request):
             "reservations": [5,5,6,3,4,8],
             "capacity": capacity,
         }
-        return HttpResponse(
-            json.dumps(response_data),
-            content_type="application/json"
-        )
+        return JsonResponse(response_data)
 
-        # return TemplateResponse(request, 'web/hala.html', response_data)
-
-        # try:
-        #     monday_date = request.POST['monday_date']
-        #     print("gabaj", monday_date)
-        #
-        # except:
-        #     e = sys.exc_info()
-        #     return HttpResponse(e)
-        # return HttpResponse(sucess)
-        # return TemplateResponse(request, 'web/hala.html', context)
     else:
         # pass
         return TemplateResponse(request, 'web/hala.html', context)
