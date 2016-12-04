@@ -1,4 +1,7 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.conf.urls import url
+
 from . import views
 
 urlpatterns = [
@@ -22,4 +25,5 @@ urlpatterns = [
     url(r'^sauna/termin/(?P<termin_id>\d+)/', views.sauna_termin, name='sauna_termin'),
     url(r'^sauna/terminy/', views.sauna_terminy, name='sauna_terminy'),
 
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+

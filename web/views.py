@@ -5,12 +5,28 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.core import serializers
 
+from django.template import Context, loader
+
 from web.models import Reservation, Room, Administrator
 
 
 @register.filter
 def multiply(dictionary, value):
     return value * dictionary
+
+# def error404(request):
+#
+#     # 1. Load models for this view
+#     #from idgsupply.models import My404Method
+#
+#     # 2. Generate Content for this view
+#     template = loader.get_template('404.html')
+#     context = Context({
+#         'message': 'All: %s' % request,
+#         })
+#
+#     # 3. Return Template for this view + Data
+#     return HttpResponse(content=template.render(context), content_type='text/html; charset=utf-8', status=404)
 
 
 TIMES = [
@@ -102,7 +118,7 @@ def hala(request):
                 }
                 return JsonResponse(response_data)
 
-            elif request.POST.get('delete'):
+            elif request.POST.get('delete_admin'):
 
                 print("request.POST", request.POST)
 
@@ -112,6 +128,41 @@ def hala(request):
                     split = time_date_login[i].split(' ')
 
                     Reservation.objects.filter(login=str(split[2]), room=room, date=str(split[1]), time=str(split[0])).delete()
+
+
+                response_data = {
+                    "message": "DONE",
+                }
+                return JsonResponse(response_data)
+
+            elif request.POST.get('delete_user'):
+
+                print("request.POST", request.POST)
+
+                time_date_login = request.POST.getlist('time_date_login[]')
+
+                for i in range(len(time_date_login)):
+                    split = time_date_login[i].split(' ')
+
+                    Reservation.objects.filter(login=str(split[2]), room=room, date=str(split[1]), time=str(split[0])).delete()
+
+
+                response_data = {
+                    "message": "DONE",
+                }
+                return JsonResponse(response_data)
+
+            elif request.POST.get('update_user'):
+
+                print("request.POST", request.POST)
+
+                time_date_login = request.POST.getlist('time_date_login[]')
+                notes = request.POST.getlist('notes[]')
+
+                for i in range(len(notes)):
+                    split = time_date_login[i].split(' ')
+
+                    Reservation.objects.filter(login=str(split[2]), room=room, date=str(split[1]), time=str(split[0])).update(note=notes[i])
 
 
                 response_data = {

@@ -19,31 +19,55 @@
 
 <body>
 
-<!-- Modal window for termin info-->
-<div class="modal fade" id="modal_window" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<!-- Modal window for termin info == admin -->
+<div class="modal fade" id="modal_window_admin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="modal_label"></h4>
+                <h4 class="modal-title" id="modal_label_admin"></h4>
             </div>
 
-            <div class="modal-body" id="modal_body" style="overflow-y: scroll;">
+            <div class="modal-body" id="modal_body_admin" style="overflow-y: scroll;">
                 <!--ajax success content here-->
             </div>
             <!--note for delete if admin is logged in-->
-            <div class="form-group" id="note_for_delete">
+            <div class="form-group" id="note_for_delete_admin">
                 <label for="comment">Poznamka pre odhlasenie:</label>
-                <textarea class="form-control" rows="4" id="comment"
+                <textarea class="form-control" rows="4" id="comment_admin"
                           placeholder="Ahojte, musel som Vas odhlasit, pretoze ..."></textarea>
-                <button type="button" class="btn btn-danger btn-lg" id="modal-delete">Odhlasit</button>
+                <button type="button" class="btn btn-danger btn-lg" id="modal-delete_admin">Odhlasit</button>
             </div>
+
         </div>
     </div>
 </div>
 
-<!-- Modal window for temrin save-->
+<!-- Modal window for termin info == user -->
+<div class="modal fade" id="modal_window_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modal_label_user"></h4>
+            </div>
+
+            <div class="modal-body" id="modal_body_user" style="overflow-y: scroll;">
+                <!--ajax success content here-->
+            </div>
+            <!--delete registration -->
+            <div class="form-group" id="">
+                <button type="button" class="btn btn-danger btn-lg" id="modal-delete_user">Odhlasit</button>
+                <button type="button" class="btn btn-danger btn-lg" id="modal-update_user">Uložiť</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal window for termin save-->
 <div class="modal fade" id="modal_window_save" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -176,12 +200,12 @@
                         $("#modal_label").html("Nahlad terminu");
 
 
-                        var table = '<table style="width:100%" border="1px" id="modal_table"><tr> <th>Prihlaseny na tentp termin(' + response.number + '):</th> <th>Poznamka</th>';
+                        var table = '<table style="width:100%" border="1px" id="modal_table"><tr> <th>Prihlaseny na tento termin(' + response.number + '):</th> <th>Poznamka</th>';
 
+                        var current_user_login = "user_login";
+                        var rank = "student";
 
-                        var rank = "admin";
                         if (rank == "admin") {
-                            document.getElementById("note_for_delete").style.visibility = "visible";
 
                             var additional_html;
                             table += '<th>Odhlasit</th>'
@@ -190,23 +214,29 @@
                                 additional_html = '</td><td>Note link: ' + response.res_notes[i] + '</td><td id="id '+id+'"><input type="checkbox" id="'+ response['res_times'][i] + ' ' + response['res_dates'][i]+ ' ' + response['res_logins'][i]+'"></td>';
                                 table += '<tr><td>' + response['res_names'][i]+ additional_html;
                             }
+                            table += '</table>';
+
+                            $("#modal_body_admin").html(table);
+                            $("#modal_window_admin").modal('show');
                         }
                         else {
-                            document.getElementById("note_for_delete").style.visibility = "hidden";
-
                             var additional_html;
 //                            table += '<th></th>';
 
                             for (i = 0; i < response.number; i++) {
-                                additional_html = '</td><td>Note link: ' + response.res_notes[i] + '</td>';
+                                if(current_user_login == response['res_logins'][i]){
+                                    additional_html = '</td><td id="'+ response['res_times'][i] + ' ' + response['res_dates'][i]+ ' ' + response['res_logins'][i]+'"><input type="text" value="'+response['res_notes'][i]+'"></td>';
+                                }
+                                else {
+                                    additional_html = '</td><td id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '">' + response['res_notes'][i] + '</td>';
+                                }
                                 table += '<tr><td>' + response['res_names'][i] + additional_html;
                             }
-                        }
+                            table += '</table>';
 
-                        table += '</table>';
-
-                        $("#modal_body").html(table);
-                        $("#modal_window").modal('show');
+                            $("#modal_body_user").html(table);
+                            $("#modal_window_user").modal('show');
+                            }
 
                     },
                     error: function (xhr, errmsg, err) {
@@ -546,7 +576,7 @@
 //
         });
 
-        $('#modal-delete').click(function () {
+        $('#modal-delete_admin').click(function () {
             console.log("delete");
 
             var array = $("#modal_table tr td input");
@@ -568,7 +598,7 @@
 
             console.log(time_date_login);
 
-            function delete_from_dtb() {
+            function delete_from_dtb_admin() {
 //                    var csrftoken = getCookie('csrftoken');
                 $.ajax({
                     url: window.location.href, // the endpoint,commonly same url
@@ -576,12 +606,12 @@
                     data: {
 //                            csrfmiddlewaretoken: csrftoken,
                         time_date_login: time_date_login,
-                        delete: "True",
+                        delete_admin: "True",
 
                     },
                     // when success then get data from response and re-render data on page
                     success: function (response) {
-                        $("#modal_window_save").modal('hide');
+                        $("#modal_window_admin").modal('hide');
                         get_reservations_from_dtb();
                         console.log(response);
 
@@ -593,7 +623,125 @@
             }
 
             // function call
-            delete_from_dtb();
+            delete_from_dtb_admin();
+        });
+
+
+        $('#modal-delete_user').click(function () {
+
+            var array = $("#modal_table tr td");
+
+            console.log(array);
+
+            var current_user_login = "user_login";
+
+            var time_date_login = [];
+
+            for (var i = 0; i < array.length; i++) {
+                if (i % 2 == 1){
+                    console.log("DOPC", array[i].id, array[i].id.split(" ")[2]);
+//                    dates.push(get_date_by_id(array[i].parentNode.id.split(" ")[1]));
+                    if (current_user_login == array[i].id.split(" ")[2]) {
+                        time_date_login.push(array[i].id);
+                    }
+                }
+            }
+
+            console.log(time_date_login);
+
+            function delete_from_dtb_user() {
+//                    var csrftoken = getCookie('csrftoken');
+                $.ajax({
+                    url: window.location.href, // the endpoint,commonly same url
+                    type: "POST", // http method
+                    data: {
+//                            csrfmiddlewaretoken: csrftoken,
+                        time_date_login: time_date_login,
+                        delete_user: "True",
+
+                    },
+                    // when success then get data from response and re-render data on page
+                    success: function (response) {
+                        $("#modal_window_user").modal('hide');
+                        get_reservations_from_dtb();
+                        console.log(response);
+
+                    },
+                    error: function (xhr, errmsg, err) {
+                        console.log("Error " + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                    }
+                });
+            }
+
+            // function call
+
+            if (time_date_login.length > 0) {
+                delete_from_dtb_user();
+            }
+            else{
+                alert("Na tomto termine nemate ziadnu registraciu");
+            }
+        });
+
+
+        $('#modal-update_user').click(function () {
+
+            var array = $("#modal_table tr td");
+
+            var current_user_login = "user_login";
+
+            var time_date_login = [];
+            var notes = [];
+
+            for (var i = 0; i < array.length; i++) {
+
+                if (i % 2 == 1){
+                    console.log("DOPC", array[i].id, array[i].id.split(" ")[2]);
+//                    dates.push(get_date_by_id(array[i].parentNode.id.split(" ")[1]));
+                    if (current_user_login == array[i].id.split(" ")[2]) {
+                        time_date_login.push(array[i].id);
+                        notes.push(array[i].children[0].value);
+//                        console.log("ZMENENA NOTE", array[parseInt(i+1)].value);
+                    }
+                }
+
+            }
+
+            console.log(time_date_login);
+
+            function delete_from_dtb_user() {
+//                    var csrftoken = getCookie('csrftoken');
+                $.ajax({
+                    url: window.location.href, // the endpoint,commonly same url
+                    type: "POST", // http method
+                    data: {
+//                            csrfmiddlewaretoken: csrftoken,
+                        time_date_login: time_date_login,
+                        notes: notes,
+                        update_user: "True",
+
+                    },
+                    // when success then get data from response and re-render data on page
+                    success: function (response) {
+                        $("#modal_window_user").modal('hide');
+//                        get_reservations_from_dtb();
+                        console.log(response);
+
+                    },
+                    error: function (xhr, errmsg, err) {
+                        console.log("Error " + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                    }
+                });
+            }
+
+            // function call
+
+            if (time_date_login.length > 0) {
+                delete_from_dtb_user();
+            }
+            else{
+                alert("Na tomto termine nemate ziadnu registraciu");
+            }
         });
 
 
@@ -618,6 +766,13 @@
 // onload functions
 //----------------------------------------------------------------------------------------------------------------------
         function select_red_by_day(day) {
+
+            for (var i = 1; i <= 110; i++) {
+                if (document.getElementById(i.toString()).children.length == 3) {
+                    document.getElementById(i.toString()).children[0].checked = false;
+                }
+            }
+
             if (day < 6 && day > 0) {
                 var ix = 0;
                 for (var i = 1; i < 110; i++) {
