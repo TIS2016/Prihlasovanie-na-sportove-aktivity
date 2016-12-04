@@ -19,25 +19,50 @@
 
 <body>
 
-<!-- Modal -->
-<div class="modal fade" id="getCodeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<!-- Modal window for termin info-->
+<div class="modal fade" id="modal_window" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel"> NAHLAD TERMINU </h4>
+                <h4 class="modal-title" id="modal_label"></h4>
             </div>
-            <div class="modal-body" id="getCode" style="overflow-y: scroll;" >
-                //ajax success content here.
-                {{ pocet }}
 
+            <div class="modal-body" id="modal_body" style="overflow-y: scroll;">
+                <!--ajax success content here-->
             </div>
-            <div class="form-group">
+            <!--note for delete if admin is logged in-->
+            <div class="form-group" id="note_for_delete">
                 <label for="comment">Poznamka pre odhlasenie:</label>
-                <textarea class="form-control" rows="5" id="comment"></textarea>
+                <textarea class="form-control" rows="4" id="comment"
+                          placeholder="Ahojte, musel som Vas odhlasit, pretoze ..."></textarea>
+                <button type="button" class="btn btn-danger btn-lg" id="modal-delete">Odhlasit</button>
             </div>
-            <button type="button" class="btn btn-danger btn-lg" id="delete">Odhlasit</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal window for temrin save-->
+<div class="modal fade" id="modal_window_save" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modal_label_save"></h4>
+            </div>
+            <div id="user_name">Meno</div>
+            <div class="modal-body" id="modal_body_save" style="overflow-y: scroll;">
+                <!--ajax success content here-->
+            </div>
+
+            <!--save button when doing reservation-->
+            <div class="form-group" id="save-btn-last-check">
+                <button type="button" class="btn btn-danger btn-lg" id="modal-save">Uložiť</button>
+            </div>
+
         </div>
     </div>
 </div>
@@ -63,32 +88,33 @@
             function mod(n, m) {
                 return ((n % m) + m) % m;
             }
-            function getCrtfCookie(name) {
-                var cookieValue = null;
-                if (document.cookie && document.cookie != '') {
-                    var cookies = document.cookie.split(';');
-                    for (var i = 0; i < cookies.length; i++) {
-                        var cookie = jQuery.trim(cookies[i]);
-                        // Does this cookie string begin with the name we want?
-                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
+            //            function getCrtfCookie(name) {
+            //                var cookieValue = null;
+            //                if (document.cookie && document.cookie != '') {
+            //                    var cookies = document.cookie.split(';');
+            //                    for (var i = 0; i < cookies.length; i++) {
+            //                        var cookie = jQuery.trim(cookies[i]);
+            //                        // Does this cookie string begin with the name we want?
+            //                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+            //                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            //                            break;
+            //                        }
+            //                    }
+            //                }
+            //                return cookieValue;
+            //            }
 
-            var windowObjectReference;
-            var csrftoken = getCrtfCookie('csrftoken');
+            //            var csrftoken = getCrtfCookie('csrftoken');
 
-            // function which open particular day-lesson in new window
-            function show_termin_info(id) {
-                var dimensions = 'width=500,height=300,left=0,top=100,screenX=0,screenY=100';
 
+            // rank means if it is student or teacher or admin
+
+
+            function get_date_by_id(id) {
+                id = parseInt(id);
                 var day = id % 5;
 
-                var datum = null;
+                var date = null;
 
                 var array = document.getElementById('datepicker').value.split('/');
                 // get 5 days of the week
@@ -104,7 +130,6 @@
                 var md4 = d4.previous().monday();
                 var md5 = d5.previous().monday();
 
-
                 var dd1 = md1;
                 var dd2 = md2.add(1).days();
                 var dd3 = md3.add(2).days();
@@ -113,52 +138,75 @@
 
                 switch (day) {
                     case 1:
-                        datum = dd1;
-                        console.log("pon", dd1);
+                        date = dd1;
                         break;
                     case 2:
-                        datum = dd2;
-                        console.log("ut", dd2);
+                        date = dd2;
                         break;
                     case 3:
-                        datum = dd3;
-                        console.log("streda", dd3);
+                        date = dd3;
                         break;
                     case 4:
-                        datum = dd4;
-                        console.log("stvrtok", dd4);
+                        date = dd4;
                         break;
                     case 0:
-                        datum = dd5;
-                        console.log("pia", dd5);
+                        date = dd5;
                         break;
 
                 }
+                return date;
+            }
+
+            // function which open particular day-lesson in new window
+            function show_termin_info(id) {
+
 
                 $.ajax({
                     url: 'termin/' + id + '/',
                     type: 'POST',
                     data: {
-                        csrfmiddlewaretoken: csrftoken,
-                        datum: datum,
+//                        csrfmiddlewaretoken: csrftoken,
+                        date: get_date_by_id(id),
 
                     },
-                    success: function (json) {
+                    success: function (response) {
 
-                        thisIsAnObject = json['reservations'];
+                        thisIsAnObject = response['reservations'];
 
-//                        if (windowObjectReference) {
-//                            windowObjectReference.close();
-//                        }
-//                        windowObjectReference = window.open(this.url, 'termin_info', dimensions);
+                        $("#modal_label").html("Nahlad terminu");
 
 
-                        $("#getCode").html(json['pocet']);
-                        $("#getCodeModal").modal('show');
+                        var table = '<table style="width:100%" border="1px" id="modal_table"><tr> <th>Prihlaseny na tentp termin(' + response.number + '):</th> <th>Poznamka</th>';
 
 
-                        var res = json['reservations'];
-                        var capacity = json['capacity'];
+                        var rank = "admin";
+                        if (rank == "admin") {
+                            document.getElementById("note_for_delete").style.visibility = "visible";
+
+                            var additional_html;
+                            table += '<th>Odhlasit</th>'
+
+                            for (i = 0; i < response.number; i++) {
+                                additional_html = '</td><td>Note link: ' + response.res_notes[i] + '</td><td id="id '+id+'"><input type="checkbox" id="'+ response['res_times'][i] + ' ' + response['res_dates'][i]+ ' ' + response['res_logins'][i]+'"></td>';
+                                table += '<tr><td>' + response['res_names'][i]+ additional_html;
+                            }
+                        }
+                        else {
+                            document.getElementById("note_for_delete").style.visibility = "hidden";
+
+                            var additional_html;
+//                            table += '<th></th>';
+
+                            for (i = 0; i < response.number; i++) {
+                                additional_html = '</td><td>Note link: ' + response.res_notes[i] + '</td>';
+                                table += '<tr><td>' + response['res_names'][i] + additional_html;
+                            }
+                        }
+
+                        table += '</table>';
+
+                        $("#modal_body").html(table);
+                        $("#modal_window").modal('show');
 
                     },
                     error: function (xhr, errmsg, err) {
@@ -208,21 +256,104 @@
         }
 
         // fnction to get csrftoken from cookies which is used to comunicate with wsgi protocol
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie != '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
+//        function getCookie(name) {
+//            var cookieValue = null;
+//            if (document.cookie && document.cookie != '') {
+//                var cookies = document.cookie.split(';');
+//                for (var i = 0; i < cookies.length; i++) {
+//                    var cookie = jQuery.trim(cookies[i]);
+//                    // Does this cookie string begin with the name we want?
+//                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+//                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+//                        break;
+//                    }
+//                }
+//            }
+//            return cookieValue;
+//        }
+
+        function get_reservations_from_dtb() {
+            // parse datepicker's date
+            var array = document.getElementById('datepicker').value.split('/')
+            var d = new Date(array[2], array[1], array[0]);
+            var day = mod((d.getDay() - 2), 7);
+            // change old selected day --> red background to white
+            for (var i = 1; i <= 110; i++) {
+                if (document.getElementById(i.toString()).style.backgroundColor == "red") {
+                    document.getElementById(i.toString()).style.background = "white";
                 }
             }
-            return cookieValue;
-        }
+            // again render red bg
+            select_red_by_day(day - 1);
+
+            // get 5 days of the week
+            var d1 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
+            var d2 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
+            var d3 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
+            var d4 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
+            var d5 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
+            if (d1.getDay() != 1) {
+                var md1 = d1.previous().monday();
+                var md2 = d2.previous().monday();
+                var md3 = d3.previous().monday();
+                var md4 = d4.previous().monday();
+                var md5 = d5.previous().monday();
+            }
+            else {
+                var md1 = d1;
+                var md2 = d2;
+                var md3 = d3;
+                var md4 = d4;
+                var md5 = d5;
+            }
+            var dd2 = md2.add(1).days();
+            var dd3 = md3.add(2).days();
+            var dd4 = md4.add(3).days();
+            var dd5 = md5.add(4).days();
+            // function which send request for data
+            function get_db_data() {
+//                    var csrftoken = getCookie('csrftoken');
+                $.ajax({
+                    url: window.location.href, // the endpoint,commonly same url
+                    type: "POST", // http method
+                    data: {
+//                            csrfmiddlewaretoken: csrftoken,
+                        d1: md1,
+                        d2: dd2,
+                        d3: dd3,
+                        d4: dd4,
+                        d5: dd5,
+                    },
+                    // when success then get data from response and re-render data on page
+                    success: function (json) {
+//                            alert(json['reservations'])
+                        console.log("json", json);
+                        var res = json['reservations'];
+                        var capacity = json['capacity'];
+                        for (var i = 0; i < res.length; i++) {
+//                            console.log(i+1, document.getElementById((i + 1).toString()).children.length, document.getElementById((i + 1).toString()).children);
+
+                            document.getElementById((i + 1).toString()).children[1].innerHTML = res[i] + "/" + capacity;
+
+
+                            if (res[i] == capacity) {
+                                document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
+                            }
+                            else {
+                                document.getElementById((i + 1).toString()).children[0].style.visibility = "visible";
+                            }
+
+                        }
+                    },
+                    error: function (xhr, errmsg, err) {
+                        console.log("Error " + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                    }
+                });
+            }
+
+            // function call
+            get_db_data();
+        };
 
 
         // jquery datepicker added to input text with id "datepicker"
@@ -233,77 +364,7 @@
                     $(this).change();
                 }
                 // when some date is selected then send request and re-render data
-            }).on("change", function () {
-                // parse datepicker's date
-                var array = document.getElementById('datepicker').value.split('/')
-                var d = new Date(array[2], array[1], array[0]);
-                var day = mod((d.getDay() - 2), 7);
-                // change old selected day --> red background to white
-                for (var i = 1; i <= 110; i++) {
-                    if (document.getElementById(i.toString()).style.backgroundColor == "red") {
-                        document.getElementById(i.toString()).style.background = "white";
-                    }
-                }
-                // again render red bg
-                select_red_by_day(day);
-
-                // get 5 days of the week
-                var d1 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
-                var d2 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
-                var d3 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
-                var d4 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
-                var d5 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
-                if (d1.getDay() != 1) {
-                    var md1 = d1.previous().monday();
-                    var md2 = d2.previous().monday();
-                    var md3 = d3.previous().monday();
-                    var md4 = d4.previous().monday();
-                    var md5 = d5.previous().monday();
-                }
-                else {
-                    var md1 = d1;
-                    var md2 = d2;
-                    var md3 = d3;
-                    var md4 = d4;
-                    var md5 = d5;
-                }
-                var dd2 = md2.add(1).days();
-                var dd3 = md3.add(2).days();
-                var dd4 = md4.add(3).days();
-                var dd5 = md5.add(4).days();
-                // function which send request for data
-                function get_db_data() {
-                    var csrftoken = getCookie('csrftoken');
-                    $.ajax({
-                        url: window.location.href, // the endpoint,commonly same url
-                        type: "POST", // http method
-                        data: {
-                            csrfmiddlewaretoken: csrftoken,
-                            d1: md1,
-                            d2: dd2,
-                            d3: dd3,
-                            d4: dd4,
-                            d5: dd5,
-                        },
-                        // when success then get data from response and re-render data on page
-                        success: function (json) {
-                            alert(json['reservations'])
-                            console.log(json);
-                            var res = json['reservations'];
-                            var capacity = json['capacity'];
-                            for (var i = 0; i < res.length; i++) {
-                                document.getElementById((i + 1).toString()).children[1].innerHTML = res[i] + "/" + capacity;
-                            }
-                        },
-                        error: function (xhr, errmsg, err) {
-                            console.log("Error " + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-                        }
-                    });
-                }
-
-                // fucntion call
-                get_db_data();
-            });
+            }).on("change", get_reservations_from_dtb);
         });
         // this will set to input text current date
         var date_today = function () {
@@ -322,21 +383,33 @@
         }
         document.getElementById('datepicker').value = date_today();
 
+
 //----------------------------------------------------------------------------------------------------------------------------------------
-
-        // this function executes when "Zrus" button clicked and change number of people in lesson
-        $("#delete").click(function () {
-            document.getElementById('1').children[1].innerHTML = "9/9";
-
-        });
-
         // this function executes when "Uloz" button clicked and opened new window with pre-submit info
         $("#save").click(function () {
             var terminy = grab_checked();
-            var postUrl = "terminy/"
+            var postUrl = "terminy/";
+//            var csrftoken = getCookie('csrftoken');
             if (terminy != null) {
-                $.post(postUrl, {termins_id: terminy}, function (response) {
-                    window.open(postUrl, 'terminy', 'width=500,height=300,left=0,top=100,screenX=0,screenY=100').document.write(response);
+                $.post(postUrl, {
+                    termins_id: terminy,
+//                    csrfmiddlewaretoken: csrftoken,
+
+                }, function (response) {
+
+                    document.getElementById("save-btn-last-check").style.visibility = "visible";
+
+                    var table = '<table style="width:100%" border="1px" id="modal_table_save"><tr> <th>Zvolili ste si tieto terminy (' + response.number + '):</th> <th>Poznamka</th>';
+                    var additional_html = '</td><td><input type="text" class="form-control"></td>';
+                    for (i = 0; i < response.number; i++) {
+                        table += '<tr><td id="id '+terminy[i]+'" >' + response['res_days'][i] + " " + response['res_times'][i] + additional_html;
+                    }
+                    table += '</table>';
+
+                    $("#modal_label_save").html("Zhrnutie prihlásených termínov a pridanie poznámky");
+                    $("#modal_body_save").html(table);
+                    $("#modal_window_save").modal('show');
+
                 });
             }
         });
@@ -366,6 +439,167 @@
             }
         }
 
+        function get_date_by_id(id) {
+            id = parseInt(id);
+            var day = id % 5;
+
+            var date = null;
+
+            var array = document.getElementById('datepicker').value.split('/');
+            // get 5 days of the week
+            var d1 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
+            var d2 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
+            var d3 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
+            var d4 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
+            var d5 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
+
+            var md1 = d1.previous().monday();
+            var md2 = d2.previous().monday();
+            var md3 = d3.previous().monday();
+            var md4 = d4.previous().monday();
+            var md5 = d5.previous().monday();
+
+            var dd1 = md1;
+            var dd2 = md2.add(1).days();
+            var dd3 = md3.add(2).days();
+            var dd4 = md4.add(3).days();
+            var dd5 = md5.add(4).days();
+
+            switch (day) {
+                case 1:
+                    date = dd1;
+                    break;
+                case 2:
+                    date = dd2;
+                    break;
+                case 3:
+                    date = dd3;
+                    break;
+                case 4:
+                    date = dd4;
+                    break;
+                case 0:
+                    date = dd5;
+                    break;
+
+            }
+            return date;
+        }
+
+// Modal window buttons on-click
+//----------------------------------------------------------------------------------------------------------------------
+
+        $('#modal-save').click(function () {
+            console.log("save");
+
+            var table = document.getElementsByName("modal_window_save");
+
+            var array = $("#modal_table_save tr td");
+
+            var times = [];
+            var notes = [];
+            var dates = [];
+            for (var i = 0; i < array.length; i++) {
+                if (i % 2 == 0) {
+                    times.push(array[i].innerHTML);
+//                    console.log(array[i].id.split(" "),array[i].id.split(" ")[1],"CLASS");
+                    var date = get_date_by_id(array[i].id.split(" ")[1]);
+//                    console.log(date.toDateString()+": "+ date.getDate()+" UTC "+date.getUTCDate());
+                    dates.push(date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate());
+                }
+                else {
+                    console.log(array[i].children[0].value);
+                    notes.push(array[i].children[0].value);
+                }
+
+            }
+            function save_to_dtb() {
+//                    var csrftoken = getCookie('csrftoken');
+                $.ajax({
+                    url: window.location.href, // the endpoint,commonly same url
+                    type: "POST", // http method
+                    data: {
+//                            csrfmiddlewaretoken: csrftoken,
+                        times: times,
+                        notes: notes,
+                        dates: dates,
+                        save: "True",
+
+                    },
+                    // when success then get data from response and re-render data on page
+                    success: function (response) {
+                        $("#modal_window_save").modal('hide');
+                        get_reservations_from_dtb();
+                        console.log(response);
+
+                    },
+                    error: function (xhr, errmsg, err) {
+                        console.log("Error " + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                    }
+                });
+            }
+
+            // function call
+            save_to_dtb();
+
+
+//
+        });
+
+        $('#modal-delete').click(function () {
+            console.log("delete");
+
+            var array = $("#modal_table tr td input");
+            console.log(array[0].checked);
+
+            var time_date_login = [];
+
+            for (var i = 0; i < array.length; i++) {
+
+//                console.log(array[i], array[i].checked);
+
+                if (array[i].checked){
+//                    dates.push(get_date_by_id(array[i].parentNode.id.split(" ")[1]));
+                    time_date_login.push(array[i].id);
+                    console.log("PARENT", array[i].id, array[i].id.split(" ")[1]);
+                }
+
+            }
+
+            console.log(time_date_login);
+
+            function delete_from_dtb() {
+//                    var csrftoken = getCookie('csrftoken');
+                $.ajax({
+                    url: window.location.href, // the endpoint,commonly same url
+                    type: "POST", // http method
+                    data: {
+//                            csrfmiddlewaretoken: csrftoken,
+                        time_date_login: time_date_login,
+                        delete: "True",
+
+                    },
+                    // when success then get data from response and re-render data on page
+                    success: function (response) {
+                        $("#modal_window_save").modal('hide');
+                        get_reservations_from_dtb();
+                        console.log(response);
+
+                    },
+                    error: function (xhr, errmsg, err) {
+                        console.log("Error " + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                    }
+                });
+            }
+
+            // function call
+            delete_from_dtb();
+        });
+
+
+// buttons around calendar
+//----------------------------------------------------------------------------------------------------------------------
+
         // next ( ">" ) button clicked increase value in input text
         $('#next').click(function () {
             var date = $('#datepicker').datepicker('getDate');
@@ -381,11 +615,12 @@
             change_bg_color();
         });
 
+// onload functions
+//----------------------------------------------------------------------------------------------------------------------
         function select_red_by_day(day) {
-
             if (day < 6 && day > 0) {
                 var ix = 0;
-                for (var i = 1; i <= 110; i++) {
+                for (var i = 1; i < 110; i++) {
                     if (Math.floor(i / day)) {
                         document.getElementById(i.toString()).style.background = "red";
                         day += 5;
@@ -420,6 +655,7 @@
         }
         ;
 
+        // rank means if it is student or teacher or admin
         var rank = "admin";
 
         function logic_division() {
@@ -438,9 +674,8 @@
         }
         ;
 
-
         function do_stuff() {
-
+            get_reservations_from_dtb();
             change_bg_color();
             logic_division();
         }
