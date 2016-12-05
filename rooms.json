@@ -1,0 +1,4 @@
+[{"id":1, "name":"hala", "capacity":1},
+ {"id":2, "name":"stena", "capacity":8},
+ {"id":3, "name":"sauna", "capacity":8},
+ {"id":4, "name":"posilnovna", "capacity":6}]

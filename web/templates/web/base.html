@@ -225,7 +225,7 @@
 
                             for (i = 0; i < response.number; i++) {
                                 if(current_user_login == response['res_logins'][i]){
-                                    additional_html = '</td><td id="'+ response['res_times'][i] + ' ' + response['res_dates'][i]+ ' ' + response['res_logins'][i]+'"><input type="text" value="'+response['res_notes'][i]+'"></td>';
+                                    additional_html = '</td><td id="'+ response['res_times'][i] + ' ' + response['res_dates'][i]+ ' ' + response['res_logins'][i]+'"><input type="text" class="form-control" value="'+response['res_notes'][i]+'"></td>';
                                 }
                                 else {
                                     additional_html = '</td><td id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '">' + response['res_notes'][i] + '</td>';
