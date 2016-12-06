@@ -3124,7 +3124,7 @@ fieldset[disabled] .btn-default.focus {
 }
 .btn-primary {
   color: #fff;
-  background-color: #337ab7;
+  background-color: #b3231b;
   border-color: #2e6da4;
 }
 .btn-primary:focus,
@@ -3135,7 +3135,7 @@ fieldset[disabled] .btn-default.focus {
 }
 .btn-primary:hover {
   color: #fff;
-  background-color: #286090;
+  background-color: #dc392f;
   border-color: #204d74;
 }
 .btn-primary:active,
@@ -4106,7 +4106,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav-pills > li.active > a:hover,
 .nav-pills > li.active > a:focus {
   color: #fff;
-  background-color: #337ab7;
+  background-color: #b3231b;
 }
 .nav-stacked > li {
   float: none;
@@ -4175,7 +4175,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .navbar {
   position: relative;
   min-height: 50px;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   border: 1px solid transparent;
 }
 @media (min-width: 768px) {
@@ -4854,7 +4854,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
 .label {
   display: inline;
   padding: .2em .6em .3em;
-  font-size: 75%;
+  //font-size: 75%;
   font-weight: bold;
   line-height: 1;
   color: #fff;
@@ -4884,7 +4884,7 @@ a.label:focus {
   background-color: #5e5e5e;
 }
 .label-primary {
-  background-color: #337ab7;
+  background-color: #b3231b;
 }
 .label-primary[href]:hover,
 .label-primary[href]:focus {
@@ -4922,14 +4922,14 @@ a.label:focus {
   display: inline-block;
   min-width: 10px;
   padding: 3px 7px;
-  font-size: 12px;
+  font-size: 18px;
   font-weight: bold;
   line-height: 1;
   color: #fff;
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
-  background-color: #777;
+  background-color: #777777;
   border-radius: 10px;
 }
 .badge:empty {

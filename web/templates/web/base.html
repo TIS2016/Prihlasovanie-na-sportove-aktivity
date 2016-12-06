@@ -94,19 +94,24 @@
 
 <div class="page-container">
     <div class="container-fluid">
-        {% block logo-buttons %}
 
-        {% endblock %}
 
-        {% block navigation %}
+      {% block logo-nav %}
 
-        {% endblock %}
+       {% endblock %}
+
+
 
         {% block termin-info %}
 
         {% endblock %}
 
+
         <script>
+        // rank pre modalne ohna moznosti admin/student
+         var rank = "admin";
+
+
             var thisIsAnObject;
 
             function mod(n, m) {
@@ -203,7 +208,7 @@
                         var table = '<table style="width:100%" border="1px" id="modal_table"><tr> <th>Prihlaseny na tento termin(' + response.number + '):</th> <th>Poznamka</th>';
 
                         var current_user_login = "user_login";
-                        var rank = "student";
+
 
                         if (rank == "admin") {
 
@@ -223,16 +228,21 @@
                             var additional_html;
 //                            table += '<th></th>';
 
+
+
                             for (i = 0; i < response.number; i++) {
-                                if(current_user_login == response['res_logins'][i]){
-                                    additional_html = '</td><td id="'+ response['res_times'][i] + ' ' + response['res_dates'][i]+ ' ' + response['res_logins'][i]+'"><input type="text" class="form-control" value="'+response['res_notes'][i]+'"></td>';
-                                }
-                                else {
-                                    additional_html = '</td><td id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '">' + response['res_notes'][i] + '</td>';
-                                }
-                                table += '<tr><td>' + response['res_names'][i] + additional_html;
+                                <!--if(  response['date_check'] ==  document.getElementById('datepicker').value){-->
+                                    if(current_user_login == response['res_logins'][i]){
+                                        additional_html = '</td><td id="'+ response['res_times'][i] + ' ' + response['res_dates'][i]+ ' ' + response['res_logins'][i]+'"><input type="text" class="form-control" value="'+response['res_notes'][i]+'"></td>';
+                                    }
+                                    else {
+                                        additional_html = '</td><td id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '">' + response['res_notes'][i] + '</td>';
+                                    }
+                                    table += '<tr><td>' + response['res_names'][i] + additional_html;
+                                <!--}-->
                             }
                             table += '</table>';
+
 
                             $("#modal_body_user").html(table);
                             $("#modal_window_user").modal('show');
@@ -356,8 +366,7 @@
                     },
                     // when success then get data from response and re-render data on page
                     success: function (json) {
-//                            alert(json['reservations'])
-                        console.log("json", json);
+                        <!--alert(json['reservations'])-->
                         var res = json['reservations'];
                         var capacity = json['capacity'];
                         for (var i = 0; i < res.length; i++) {
@@ -766,6 +775,7 @@
 // onload functions
 //----------------------------------------------------------------------------------------------------------------------
         function select_red_by_day(day) {
+        debugger
 
             for (var i = 1; i <= 110; i++) {
                 if (document.getElementById(i.toString()).children.length == 3) {
@@ -774,29 +784,23 @@
             }
 
             if (day < 6 && day > 0) {
-                var ix = 0;
                 for (var i = 1; i < 110; i++) {
                     if (Math.floor(i / day)) {
-                        document.getElementById(i.toString()).style.background = "red";
+                        document.getElementById(i.toString()).children[1].style.background = "red";
                         day += 5;
                     }
                     else {
-                        if (document.getElementById(i.toString()).style.backgroundColor == "red") {
-                            if (ix % 2 == 0) {
-                                document.getElementById(i.toString()).style.background = "#F9F9F9";
-                            }
-                            else {
-                                document.getElementById(i.toString()).style.background = "white";
-                            }
-                            ix += 1;
+                        if (document.getElementById(i.toString()).children[1].style.backgroundColor == "red") {
+                            document.getElementById(i.toString()).children[1].style.background = "#777777";
+
                         }
                     }
                 }
             }
             else {
                 for (var i = 1; i <= 110; i++) {
-                    if (document.getElementById(i.toString()).style.backgroundColor == "red") {
-                        document.getElementById(i.toString()).style.background = "white";
+                    if (document.getElementById(i.toString()).children[1].style.backgroundColor == "red") {
+                        document.getElementById(i.toString()).children[1].style.background = "#777777";
                     }
                 }
             }
@@ -812,6 +816,9 @@
 
         // rank means if it is student or teacher or admin
         var rank = "admin";
+
+
+        // dorobit porovnavanie s databazou
 
         function logic_division() {
             for (var i = 1; i <= 110; i++) {
