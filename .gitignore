@@ -1,0 +1,7 @@
+
+# additional packages from JetBrains
+.idea/
+
+# python cache 
+/booking\__pycache__
+/web\__pycache__
