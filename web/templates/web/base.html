@@ -108,6 +108,27 @@
 
 
         <script>
+        // this will grab checked checkboxes and will return id's of their div element
+        function grab_checked() {
+            var result = [];
+            var divs = $('div[class="checkbox"]');
+            var checked = 0;
+            for (i = 0; i < divs.length; i++) {
+                if (divs[i].children[0].checked) {
+                    checked += 1;
+                    result.push(divs[i].id);
+                }
+            }
+            var resultString = checked + " z " + divs.length + " termínov vybratých";
+            if (checked > 0) {
+                $('#div').html(resultString);
+                return result;
+            } else {
+                $('#div').html("Nevybrali ste žiadne termíny");
+                return null;
+            }
+        }
+
         // rank pre modalne ohna moznosti admin/student
          var rank = "admin";
 
@@ -457,26 +478,7 @@
 //----------------------------------------------------------------------------------------------------------------------------------------
 
 
-        // this will grab checked checkboxes and will return id's of their div element
-        function grab_checked() {
-            var result = [];
-            var divs = $('div[class="checkbox"]');
-            var checked = 0;
-            for (i = 0; i < divs.length; i++) {
-                if (divs[i].children[0].checked) {
-                    checked += 1;
-                    result.push(divs[i].id);
-                }
-            }
-            var resultString = checked + " out of " + divs.length + " checkboxes are checked";
-            if (checked > 0) {
-                $('#div').html(resultString);
-                return result;
-            } else {
-                $('#div').html("Nevybrali ste žiadne termíny");
-                return null;
-            }
-        }
+
 
         function get_date_by_id(id) {
             id = parseInt(id);

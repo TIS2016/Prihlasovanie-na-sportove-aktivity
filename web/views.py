@@ -109,9 +109,9 @@ def hala(request):
                 for i in range(len(times)):
                     print(times[i], times[i])
 
-                    time = str(times[i]).strip().split()
+                    time = unicode(times[i]).strip().split()
 
-                    Reservation.objects.create(login="user_login", name="user_name", surname="user_surname", room=room, date=str(dates[i]), time=time[1], note=str(notes[i]))
+                    Reservation.objects.create(login="user_login", name="user_name", surname="user_surname", room=room, date=unicode(dates[i]), time=time[1], note=unicode(notes[i]))
 
                 response_data = {
                     "message": "DONE",
@@ -127,7 +127,7 @@ def hala(request):
                 for i in range(len(time_date_login)):
                     split = time_date_login[i].split(' ')
 
-                    Reservation.objects.filter(login=str(split[2]), room=room, date=str(split[1]), time=str(split[0])).delete()
+                    Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]), time=unicode(split[0])).delete()
 
 
                 response_data = {
@@ -144,7 +144,7 @@ def hala(request):
                 for i in range(len(time_date_login)):
                     split = time_date_login[i].split(' ')
 
-                    Reservation.objects.filter(login=str(split[2]), room=room, date=str(split[1]), time=str(split[0])).delete()
+                    Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]), time=unicode(split[0])).delete()
 
 
                 response_data = {
@@ -162,7 +162,7 @@ def hala(request):
                 for i in range(len(notes)):
                     split = time_date_login[i].split(' ')
 
-                    Reservation.objects.filter(login=str(split[2]), room=room, date=str(split[1]), time=str(split[0])).update(note=notes[i])
+                    Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]), time=unicode(split[0])).update(note=notes[i])
 
 
                 response_data = {
@@ -173,11 +173,11 @@ def hala(request):
             # send reservations numbers to the view
             else:
 
-                mon = str(request.POST.get('d1')).strip().split()
-                tue = str(request.POST.get('d2')).strip().split()
-                wed = str(request.POST.get('d3')).strip().split()
-                thu = str(request.POST.get('d4')).strip().split()
-                fri = str(request.POST.get('d5')).strip().split()
+                mon = unicode(request.POST.get('d1')).strip().split()
+                tue = unicode(request.POST.get('d2')).strip().split()
+                wed = unicode(request.POST.get('d3')).strip().split()
+                thu = unicode(request.POST.get('d4')).strip().split()
+                fri = unicode(request.POST.get('d5')).strip().split()
 
                 # print(months.get(mon[1]), mon[2], mon[3])
 
@@ -243,7 +243,7 @@ def hala_termin(request, termin_id):
     if request.is_ajax():
         print("datum", request.POST.get('date'))
 
-        date = str(request.POST.get('date')).strip().split()
+        date = unicode(request.POST.get('date')).strip().split()
 
         date = "{}-{}-{}".format(date[3], MONTHS.get(date[1]), date[2])
         time = TIMES[(int(termin_id) - 1) // 5]
