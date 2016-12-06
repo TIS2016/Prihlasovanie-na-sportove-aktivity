@@ -33,11 +33,12 @@
                 <!--ajax success content here-->
             </div>
             <!--note for delete if admin is logged in-->
-            <div class="form-group" id="note_for_delete_admin">
-                <label for="comment">Poznamka pre odhlasenie:</label>
+            <div class="form-group" id="note_for_delete_admin" style="margin:15px;">
+                <label for="comment">Poznámka pre odhlásenie:</label>
                 <textarea class="form-control" rows="4" id="comment_admin"
-                          placeholder="Ahojte, musel som Vas odhlasit, pretoze ..."></textarea>
-                <button type="button" class="btn btn-danger btn-lg" id="modal-delete_admin">Odhlasit</button>
+                          placeholder="Ahojte, musel som Vás odhlásiť, pretože ..."></textarea>
+                <br>
+                <button type="button" style="width:100px;" class="btn btn-danger btn-lg" id="modal-delete_admin">Odhlásiť</button>
             </div>
 
         </div>
@@ -48,19 +49,22 @@
 <div class="modal fade" id="modal_window_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
+
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="modal_label_user"></h4>
+
             </div>
 
             <div class="modal-body" id="modal_body_user" style="overflow-y: scroll;">
+
                 <!--ajax success content here-->
             </div>
             <!--delete registration -->
             <div class="form-group" id="">
-                <button type="button" class="btn btn-danger btn-lg" id="modal-delete_user">Odhlasit</button>
-                <button type="button" class="btn btn-danger btn-lg" id="modal-update_user">Uložiť</button>
+                <button type="button" style="margin-left:15px; width:100px;" class="btn btn-danger btn-lg" id="modal-delete_user">Odhlásiť</button>
+                <button type="button" style="margin-left:5px; width:100px;" class="btn btn-danger btn-lg" id="modal-update_user">Uložiť</button>
             </div>
 
         </div>
@@ -102,6 +106,9 @@
 
 
 
+
+
+
         {% block termin-info %}
 
         {% endblock %}
@@ -119,18 +126,21 @@
                     result.push(divs[i].id);
                 }
             }
-            var resultString = checked + " z " + divs.length + " termínov vybratých";
+            var resultString = "<h3>" + checked + " z " + divs.length + " termínov vybratých</h3>";
             if (checked > 0) {
                 $('#div').html(resultString);
                 return result;
             } else {
-                $('#div').html("Nevybrali ste žiadne termíny");
+                $('#div').html("<h3>Nevybrali ste žiadne termíny</h3>");
                 return null;
             }
         }
 
         // rank pre modalne ohna moznosti admin/student
-         var rank = "admin";
+
+
+         var rank = "student";
+         //var rank = "admin";
 
 
             var thisIsAnObject;
@@ -226,7 +236,7 @@
                         $("#modal_label").html("Nahlad terminu");
 
 
-                        var table = '<table style="width:100%" border="1px" id="modal_table"><tr> <th>Prihlaseny na tento termin(' + response.number + '):</th> <th>Poznamka</th>';
+                        var table = '<table class="table table-striped" id="modal_table"><tr> <th>Prihlásený na tento termín (' + response.number + ')     </th> <th>Poznámka</th>';
 
                         var current_user_login = "user_login";
 
@@ -234,14 +244,15 @@
                         if (rank == "admin") {
 
                             var additional_html;
-                            table += '<th>Odhlasit</th>'
+                            table += '<th>Odhlásiť</th>'
 
                             for (i = 0; i < response.number; i++) {
-                                additional_html = '</td><td>Note link: ' + response.res_notes[i] + '</td><td id="id '+id+'"><input type="checkbox" id="'+ response['res_times'][i] + ' ' + response['res_dates'][i]+ ' ' + response['res_logins'][i]+'"></td>';
+                                additional_html = '</td><td>Note link: ' + response.res_notes[i] + '</td><td id="id '+id+'"><input style="margin-left:28px;" type="checkbox" id="'+ response['res_times'][i] + ' ' + response['res_dates'][i]+ ' ' + response['res_logins'][i]+'"></td>';
                                 table += '<tr><td>' + response['res_names'][i]+ additional_html;
                             }
                             table += '</table>';
 
+                            $("#modal_label_admin").html("<b>Zoznam prihlásených ľudí</b>");
                             $("#modal_body_admin").html(table);
                             $("#modal_window_admin").modal('show');
                         }
@@ -264,7 +275,7 @@
                             }
                             table += '</table>';
 
-
+                            $("#modal_label_user").html("Zoznam prihlásených ľudí");
                             $("#modal_body_user").html(table);
                             $("#modal_window_user").modal('show');
                             }
@@ -466,7 +477,7 @@
                     }
                     table += '</table>';
 
-                    $("#modal_label_save").html("Zhrnutie prihlásených termínov a pridanie poznámky");
+                    $("#modal_label_save").html("<b>Zhrnutie prihlásených termínov a pridanie poznámky</b>");
                     $("#modal_body_save").html(table);
                     $("#modal_window_save").modal('show');
 
@@ -777,32 +788,42 @@
 // onload functions
 //----------------------------------------------------------------------------------------------------------------------
         function select_red_by_day(day) {
-
             for (var i = 1; i <= 110; i++) {
                 if (document.getElementById(i.toString()).children.length == 3) {
                     document.getElementById(i.toString()).children[0].checked = false;
                 }
             }
-
             if (day < 6 && day > 0) {
                 for (var i = 1; i < 110; i++) {
                     if (Math.floor(i / day)) {
-                        document.getElementById(i.toString()).children[1].style.background = "black";
+//                        document.getElementById(i.toString()).children[1].style.background = "#b3231b";
+                        $('#'+i.toString()).children().css('background-color', 'darkRed');
                         day += 5;
                     }
                     else {
-                        if (document.getElementById(i.toString()).children[1].style.backgroundColor == "black") {
-                            document.getElementById(i.toString()).children[1].style.background = "#9e9e9e";
-
-                        }
+//                        console.log($('#'+i.toString()).children().css("background-color"));
+                        $('#'+i.toString()).children().css('background-color', '#9e9e9e');
+//                        if ($('#'+i.toString()).children().css("background-color") == 'blue'){
+//                            console.log("ASFFD");
+//                            $('#'+i.toString()).children().css('background-color', 'white');
+//                        }
+//                        if (document.getElementById(i.toString()).children[1].style.backgroundColor == "#b3231b") {
+//                            document.getElementById(i.toString()).children[1].style.background = "#9e9e9e";
+//
+//                        }
                     }
                 }
             }
             else {
                 for (var i = 1; i <= 110; i++) {
-                    if (document.getElementById(i.toString()).children[1].style.backgroundColor == "black") {
-                        document.getElementById(i.toString()).children[1].style.background = "#9e9e9e";
-                    }
+                    $('#'+i.toString()).children().css('background-color', '#9e9e9e');
+//                        if ($('#'+i.toString()).children().css("background-color") == 'blue'){
+//                            console.log("ASFFD");
+//                            $('#'+i.toString()).children().css('background-color', 'white');
+//                        }
+//                    if (document.getElementById(i.toString()).children[1].style.backgroundColor == "#b3231b") {
+//                        document.getElementById(i.toString()).children[1].style.background = "#9e9e9e";
+//                    }
                 }
             }
         }

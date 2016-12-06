@@ -198,7 +198,7 @@ def hala(request):
 
                 response_data = {
                     "reservations": result,
-                    "capacity": capacity,
+                    "capacity": 5,
 
                 }
                 return JsonResponse(response_data)
@@ -274,7 +274,9 @@ def hala_termin(request, termin_id):
     return TemplateResponse(request, 'web/hala_termin.html', context)
 
 
+
 # <-----------------------------> POSILNOVNA <-------------------------------------->
+@csrf_exempt
 def posilnovna(request):
     context = {
         "times": TIMES,
@@ -282,6 +284,7 @@ def posilnovna(request):
     return TemplateResponse(request, 'web/posilnovna.html', context)
 
 
+@csrf_exempt
 def posilnovna_terminy(request):
     context = {
         "terminy": request.POST.getlist('termins_id[]'),
@@ -289,6 +292,7 @@ def posilnovna_terminy(request):
     return TemplateResponse(request, 'web/posilnovna_terminy.html', context)
 
 
+@csrf_exempt
 def posilnovna_termin(request, termin_id):
     context = {
         "termin_id": termin_id,
@@ -297,6 +301,7 @@ def posilnovna_termin(request, termin_id):
 
 
 # <-----------------------------> STENA <------------------------------------------>
+@csrf_exempt
 def stena(request):
     context = {
         "times": TIMES,
@@ -304,6 +309,7 @@ def stena(request):
     return TemplateResponse(request, 'web/stena.html', context)
 
 
+@csrf_exempt
 def stena_terminy(request):
     context = {
         "terminy": request.POST.getlist('termins_id[]'),
@@ -311,6 +317,7 @@ def stena_terminy(request):
     return TemplateResponse(request, 'web/stena_terminy.html', context)
 
 
+@csrf_exempt
 def stena_termin(request, termin_id):
     context = {
         "termin_id": termin_id,
@@ -319,6 +326,7 @@ def stena_termin(request, termin_id):
 
 
 # <-----------------------------> SAUNA <------------------------------------------>
+@csrf_exempt
 def sauna(request):
     context = {
         "times": TIMES,
@@ -326,6 +334,7 @@ def sauna(request):
     return TemplateResponse(request, 'web/sauna.html', context)
 
 
+@csrf_exempt
 def sauna_terminy(request):
     context = {
         "terminy": request.POST.getlist('termins_id[]'),
@@ -333,6 +342,7 @@ def sauna_terminy(request):
     return TemplateResponse(request, 'web/sauna_terminy.html', context)
 
 
+@csrf_exempt
 def sauna_termin(request, termin_id):
     context = {
         "termin_id": termin_id,
