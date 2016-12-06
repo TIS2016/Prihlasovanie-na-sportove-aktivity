@@ -1,0 +1,19 @@
+Dátum stretnutia: 15.11.2016
+
+Zoznam prítomných: Buzáš, Ortutay, Reguly, Sadloň, Holas
+
+Agenda:
+	Zhodnotenie:
+		- siedme stretnutie
+    - skompletizovaný návrh je hotový
+    - Ais login je v stave riešenia s p. Zagibom
+	
+	Preberané body:
+    - preberali sme prínos každého člena tímu za uplynulý týždeň
+    - skompletizovaný návrh je dokončený a skontrolovaný- je to OK
+    - hlavnou témou bola implementácia
+      - ako sme natom , či sme začali atď... 
+  
+	Naplánovanie:
+    - riešiť Ais login
+    - mať hotové základné features v projekte
