@@ -1,8 +1,13 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.conf.urls import url
+
 from . import views
 
 urlpatterns = [
     url(r'^$', views.hala, name='hala'),
+    url(r'^termin/(?P<termin_id>\d+)/', views.hala_termin, name='hala_termin'),
+    url(r'^terminy/', views.hala_terminy, name='hala_terminy'),
 
     url(r'^hala/$', views.hala, name='hala'),
     url(r'^hala/termin/(?P<termin_id>\d+)/', views.hala_termin, name='hala_termin'),
@@ -20,4 +25,5 @@ urlpatterns = [
     url(r'^sauna/termin/(?P<termin_id>\d+)/', views.sauna_termin, name='sauna_termin'),
     url(r'^sauna/terminy/', views.sauna_terminy, name='sauna_terminy'),
 
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+

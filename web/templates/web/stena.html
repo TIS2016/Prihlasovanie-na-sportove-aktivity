@@ -1,27 +1,23 @@
-{% extends 'web/base.html' %}
+<div class="navbar navbar-inverse navbar-static-top">
+        <a href="" class="navbar-brand"><b>Prihlasovanie na športové aktivity - Stena</b></a>
+</div>
 
+
+{% extends 'web/base.html' %}
+{% load static %}
 {% block title %} Stena {% endblock %}
 
-{% block logo-buttons %}
-    <div class="col-xs-10 col-sm-10">
-        <div class="bg-primary">
-            <p class="text-left">Logo</p>
 
-        </div>
-    </div>
+{% block logo-nav %}
 
+
+
+
+<div class = "row" style="height=100%;">
     <div class="col-xs-2 col-sm-2">
-
-        <button type="button" class="btn btn-danger btn-lg" id="delete">Zrus</button>
-        <button type="button" class="btn btn-danger btn-lg" id="save">Ulozit</button>
-    </div>
-
-
-{% endblock %}
-
-
-{% block navigation %}
-    <div class="col-xs-2 col-sm-2" id="sidebar" role="navigation">
+      <br>
+    <a href="http://ktvs.fmph.uniba.sk/" target="_blank"><img src="{% static 'web/images/logo_UK.png' %}" alt="logo UK" style="width:100%; margin-left:20px; "></a>
+      <br><br>
         <ul class="nav nav-pills nav-stacked">
             <li><a href="{% url 'hala' %}">Hala</a></li>
             <li><a href="{% url 'posilnovna' %}">Posilnovna</a></li>
@@ -30,21 +26,36 @@
         </ul>
     </div>
 
-    <div class="col-xs-3 col-sm-offset-3">
-        <button type="button" class="btn btn-primary btn-sm" id="prev"> <</button>
-        <input type="text" id="datepicker">
-        <button type="button" class="btn btn-primary btn-sm" id="next"> ></button>
-        <div id="div">
 
-        </div>
-    </div>
 
 {% endblock %}
 
 
 {% block week-grid %}
     <!-- main area -->
-    <div class="col-xs-12 col-sm-10">
+    <div class="col-xs-10 col-sm-10">
+         <div class="col-xs-12 col-sm-12">
+            <p style = "text-align: right; font-size: 130%; margin-top:10px; margin-right:5px;">Maria Tucna &nbsp;&nbsp;<a href="#" alt="odhlasit">Odhlásiť </a>
+            <br><br>
+            </p>
+
+         </div>
+    <!-- main area -->
+     <div class="col-xs-9 col-sm-9">
+            <div style="text-align: center;">
+            <button type="button" class="btn btn-primary btn-sm" id="prev"> <</button>
+            <input type="text" id="datepicker">
+            <button type="button" class="btn btn-primary btn-sm" id="next"> ></button>
+                <div id="div">
+
+        </div>
+            </div>
+        </div>
+
+        <div class="col-xs-3 col-sm-3" style="text-align:right">
+        <button type="button" class="btn btn-danger btn-lg" id="save" style = "width:80px">Uložiť</button>
+            <br>
+        </div>
         <table class="table table-striped">
             <thead>
             <tr>
@@ -56,7 +67,6 @@
                 <th>Piatok</th>
             <tbody>
 
-
             {% for time in times %}
                 <tr>
                     <td>
@@ -64,31 +74,31 @@
                     </td>
                     <td>
                         <div class="checkbox" id="{{ forloop.counter0|multiply:5|add:"1" }}">
-                            <input type="checkbox" value=""><span class="badge">0/0</span>&nbsp;<span
-                                class="badge id" onclick="show_termin_info({{ forloop.counter0|multiply:5|add:"1" }} )" style="cursor: pointer;">i</span>
+                            <input type="checkbox" value="" onclick="grab_checked();"><span class="badge">0/0</span>&nbsp;<span
+                                class="badge id" onclick="show_termin_info({{ forloop.counter0|multiply:5|add:"1" }})" style="cursor: pointer;">i</span>
                         </div>
                     </td>
                     <td>
                         <div class="checkbox" id="{{ forloop.counter0|multiply:5|add:"2" }}">
-                            <input type="checkbox" value=""><span class="badge">0/0</span>&nbsp;<span
-                                class="badge id" onclick="show_termin_info({{ forloop.counter0|multiply:5|add:"2" }} )" style="cursor: pointer;">i</span>
+                            <input type="checkbox" value="" onclick="grab_checked();"><span class="badge">0/0</span>&nbsp;<span
+                                class="badge id" onclick="show_termin_info({{ forloop.counter0|multiply:5|add:"2" }})" style="cursor: pointer;">i</span>
                         </div>
                     </td>
                     <td>
                         <div class="checkbox" id="{{ forloop.counter0|multiply:5|add:"3" }}">
-                            <input type="checkbox" value=""><span class="badge">0/0</span>&nbsp;<span
-                                class="badge id" onclick="show_termin_info({{ forloop.counter0|multiply:5|add:"3" }} )" style="cursor: pointer;">i</span>
+                            <input type="checkbox" value="" onclick="grab_checked();"><span class="badge">0/0</span>&nbsp;<span
+                                class="badge id" onclick="show_termin_info({{ forloop.counter0|multiply:5|add:"3" }})" style="cursor: pointer;">i</span>
                         </div>
                     </td>
                     <td>
                         <div class="checkbox" id="{{ forloop.counter0|multiply:5|add:"4" }}">
-                            <input type="checkbox" value=""><span class="badge">0/0</span>&nbsp;<span
-                                class="badge id" onclick="show_termin_info({{ forloop.counter0|multiply:5|add:"4" }} )" style="cursor: pointer;">i</span>
+                            <input type="checkbox" value="" onclick="grab_checked();"><span class="badge">0/0</span>&nbsp;<span
+                                class="badge id" onclick="show_termin_info({{ forloop.counter0|multiply:5|add:"4" }})" style="cursor: pointer;">i</span>
                         </div>
                     </td>
                     <td>
                         <div class="checkbox" id="{{ forloop.counter0|multiply:5|add:"5" }}">
-                            <input type="checkbox" value=""> <span class="badge">0/0</span>&nbsp;<span
+                            <input type="checkbox" value="" onclick="grab_checked();"> <span class="badge">0/0</span>&nbsp;<span
                                 class="badge id" onclick="show_termin_info({{ forloop.counter0|multiply:5|add:"5" }} )" style="cursor: pointer;">i</span>
                         </div>
                     </td>
@@ -99,4 +109,5 @@
         </table>
     </div>
 {% endblock %}
+
 

@@ -24,7 +24,9 @@ SECRET_KEY = 'l233688krefc^wadn9^4d*jyqv8$ttgg1g1fbgvs)5ftni7a8u'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '*'
+]
 
 # Application definition
 
@@ -55,7 +57,7 @@ ROOT_URLCONF = 'booking.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "web", "tempaltes", "web")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -134,8 +136,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
+
+
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-)
+if DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, "web", "static", "static_in_pro")
+
+    STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, "web", "static", "web"),
+    )
