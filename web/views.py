@@ -170,26 +170,6 @@ def hala(request):
                 }
                 return JsonResponse(response_data)
 
-            elif request.POST.get('get_admin'):
-
-                print("request.POST", request.POST)
-
-                actual_user = request.POST.get('actual_user')
-
-
-                admins =  Administrator.objects.all()
-                is_admin = False
-                for admin in admins:
-                    if admin.login == actual_user:
-                        is_admin = True
-                        break
-
-                response_data = {
-                    "is_admin": is_admin,
-                    "message": "DONE",
-                }
-                return JsonResponse(response_data)
-
             # send reservations numbers to the view
             else:
 
