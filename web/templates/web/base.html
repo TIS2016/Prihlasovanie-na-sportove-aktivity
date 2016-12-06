@@ -20,7 +20,8 @@
 <body>
 
 <!-- Modal window for termin info == admin -->
-<div class="modal fade" id="modal_window_admin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal_window_admin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -45,7 +46,8 @@
 </div>
 
 <!-- Modal window for termin info == user -->
-<div class="modal fade" id="modal_window_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal_window_user" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -84,7 +86,8 @@
 
             <!--save button when doing reservation-->
             <div class="form-group" id="save-btn-last-check">
-                <button type="button" class="btn btn-danger btn-lg" id="modal-save" style="margin:15px;">Odoslať</button>
+                <button type="button" class="btn btn-danger btn-lg" id="modal-save" style="margin:15px;">Odoslať
+                </button>
             </div>
 
         </div>
@@ -96,10 +99,9 @@
     <div class="container-fluid">
 
 
-      {% block logo-nav %}
+        {% block logo-nav %}
 
-       {% endblock %}
-
+        {% endblock %}
 
 
         {% block termin-info %}
@@ -108,29 +110,29 @@
 
 
         <script>
-        // this will grab checked checkboxes and will return id's of their div element
-        function grab_checked() {
-            var result = [];
-            var divs = $('div[class="checkbox"]');
-            var checked = 0;
-            for (i = 0; i < divs.length; i++) {
-                if (divs[i].children[0].checked) {
-                    checked += 1;
-                    result.push(divs[i].id);
+            // this will grab checked checkboxes and will return id's of their div element
+            function grab_checked() {
+                var result = [];
+                var divs = $('div[class="checkbox"]');
+                var checked = 0;
+                for (i = 0; i < divs.length; i++) {
+                    if (divs[i].children[0].checked) {
+                        checked += 1;
+                        result.push(divs[i].id);
+                    }
+                }
+                var resultString = checked + " z " + divs.length + " termínov vybratých";
+                if (checked > 0) {
+                    $('#div').html(resultString);
+                    return result;
+                } else {
+                    $('#div').html("Nevybrali ste žiadne termíny");
+                    return null;
                 }
             }
-            var resultString = checked + " z " + divs.length + " termínov vybratých";
-            if (checked > 0) {
-                $('#div').html(resultString);
-                return result;
-            } else {
-                $('#div').html("Nevybrali ste žiadne termíny");
-                return null;
-            }
-        }
 
-        // rank pre modalne ohna moznosti admin/student
-         var rank = "admin";
+            // rank pre modalne ohna moznosti admin/student
+            var rank = "admin";
 
 
             var thisIsAnObject;
@@ -237,8 +239,8 @@
                             table += '<th>Odhlasit</th>'
 
                             for (i = 0; i < response.number; i++) {
-                                additional_html = '</td><td>Note link: ' + response.res_notes[i] + '</td><td id="id '+id+'"><input type="checkbox" id="'+ response['res_times'][i] + ' ' + response['res_dates'][i]+ ' ' + response['res_logins'][i]+'"></td>';
-                                table += '<tr><td>' + response['res_names'][i]+ additional_html;
+                                additional_html = '</td><td>Note link: ' + response.res_notes[i] + '</td><td id="id ' + id + '"><input type="checkbox" id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '"></td>';
+                                table += '<tr><td>' + response['res_names'][i] + additional_html;
                             }
                             table += '</table>';
 
@@ -250,16 +252,15 @@
 //                            table += '<th></th>';
 
 
-
                             for (i = 0; i < response.number; i++) {
                                 <!--if(  response['date_check'] ==  document.getElementById('datepicker').value){-->
-                                    if(current_user_login == response['res_logins'][i]){
-                                        additional_html = '</td><td id="'+ response['res_times'][i] + ' ' + response['res_dates'][i]+ ' ' + response['res_logins'][i]+'"><input type="text" class="form-control" value="'+response['res_notes'][i]+'"></td>';
-                                    }
-                                    else {
-                                        additional_html = '</td><td id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '">' + response['res_notes'][i] + '</td>';
-                                    }
-                                    table += '<tr><td>' + response['res_names'][i] + additional_html;
+                                if (current_user_login == response['res_logins'][i]) {
+                                    additional_html = '</td><td id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '"><input type="text" class="form-control" value="' + response['res_notes'][i] + '"></td>';
+                                }
+                                else {
+                                    additional_html = '</td><td id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '">' + response['res_notes'][i] + '</td>';
+                                }
+                                table += '<tr><td>' + response['res_names'][i] + additional_html;
                                 <!--}-->
                             }
                             table += '</table>';
@@ -267,7 +268,7 @@
 
                             $("#modal_body_user").html(table);
                             $("#modal_window_user").modal('show');
-                            }
+                        }
 
                     },
                     error: function (xhr, errmsg, err) {
@@ -333,7 +334,43 @@
 //            return cookieValue;
 //        }
 
-        function get_reservations_from_dtb() {
+        function myCallback(result) {
+            // Code that depends on 'result'
+            var is_user_admin = result;
+
+            get_reservations_from_dtb(result);
+        }
+
+        admin_check_with_db(myCallback);
+
+        function admin_check_with_db(callback) {
+
+            $.ajax({
+                url: window.location.href, // the endpoint,commonly same url
+                type: "POST", // http method
+                data: {
+//                            csrfmiddlewaretoken: csrftoken,
+                    actual_user: actual_user,
+                    get_admin: "True",
+
+                },
+//                async: false,
+                // when success then get data from response and re-render data on page
+                success: function (response) {
+                    var data = response['is_admin'];
+                    callback(data);
+
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log("Error " + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                }
+            });
+        };
+
+        function get_reservations_from_dtb(is_user_admin) {
+
+            console.log("is_user_admin", is_user_admin);
+
             // parse datepicker's date
             var array = document.getElementById('datepicker').value.split('/')
             var d = new Date(array[2], array[1], array[0]);
@@ -399,12 +436,33 @@
                             if (res[i] == capacity) {
                                 document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
                             }
+                            else if (is_user_admin == false) {
+
+                                // treba este dorobit zistenie zo session ci je ucitel alebo student a podla toho nastavit rank
+                                var rank = "student";
+
+                                if (rank == "student") {
+                                    if (i+1 < 71) {
+                                        if (document.getElementById((i + 1).toString()).children.length == 3) {
+                                            document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
+                                        }
+                                    }
+                                }
+                                else {
+                                    if (i+1 >= 71) {
+                                        if (document.getElementById((i + 1).toString()).children.length == 3) {
+                                            document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
+                                        }
+                                    }
+                                }
+
+                            }
                             else {
                                 document.getElementById((i + 1).toString()).children[0].style.visibility = "visible";
                             }
-
                         }
-                    },
+                    }
+                    ,
                     error: function (xhr, errmsg, err) {
                         console.log("Error " + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
                     }
@@ -462,7 +520,7 @@
                     var table = '<table class="table table-striped" style="width:100%" id="modal_table_save"><tr> <th>Zvolili ste si tieto terminy (' + response.number + '):</th> <th>Poznámka</th>';
                     var additional_html = '</td><td><input type="text" class="form-control"></td>';
                     for (i = 0; i < response.number; i++) {
-                        table += '<tr><td id="id '+terminy[i]+'" >' + response['res_days'][i] + " " + response['res_times'][i] + additional_html;
+                        table += '<tr><td id="id ' + terminy[i] + '" >' + response['res_days'][i] + " " + response['res_times'][i] + additional_html;
                     }
                     table += '</table>';
 
@@ -476,8 +534,6 @@
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------
-
-
 
 
         function get_date_by_id(id) {
@@ -546,7 +602,7 @@
 //                    console.log(array[i].id.split(" "),array[i].id.split(" ")[1],"CLASS");
                     var date = get_date_by_id(array[i].id.split(" ")[1]);
 //                    console.log(date.toDateString()+": "+ date.getDate()+" UTC "+date.getUTCDate());
-                    dates.push(date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate());
+                    dates.push(date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate());
                 }
                 else {
                     console.log(array[i].children[0].value);
@@ -599,7 +655,7 @@
 
 //                console.log(array[i], array[i].checked);
 
-                if (array[i].checked){
+                if (array[i].checked) {
 //                    dates.push(get_date_by_id(array[i].parentNode.id.split(" ")[1]));
                     time_date_login.push(array[i].id);
                     console.log("PARENT", array[i].id, array[i].id.split(" ")[1]);
@@ -649,7 +705,7 @@
             var time_date_login = [];
 
             for (var i = 0; i < array.length; i++) {
-                if (i % 2 == 1){
+                if (i % 2 == 1) {
                     console.log("DOPC", array[i].id, array[i].id.split(" ")[2]);
 //                    dates.push(get_date_by_id(array[i].parentNode.id.split(" ")[1]));
                     if (current_user_login == array[i].id.split(" ")[2]) {
@@ -689,7 +745,7 @@
             if (time_date_login.length > 0) {
                 delete_from_dtb_user();
             }
-            else{
+            else {
                 alert("Na tomto termine nemate ziadnu registraciu");
             }
         });
@@ -706,7 +762,7 @@
 
             for (var i = 0; i < array.length; i++) {
 
-                if (i % 2 == 1){
+                if (i % 2 == 1) {
                     console.log("DOPC", array[i].id, array[i].id.split(" ")[2]);
 //                    dates.push(get_date_by_id(array[i].parentNode.id.split(" ")[1]));
                     if (current_user_login == array[i].id.split(" ")[2]) {
@@ -750,7 +806,7 @@
             if (time_date_login.length > 0) {
                 delete_from_dtb_user();
             }
-            else{
+            else {
                 alert("Na tomto termine nemate ziadnu registraciu");
             }
         });
@@ -787,22 +843,36 @@
             if (day < 6 && day > 0) {
                 for (var i = 1; i < 110; i++) {
                     if (Math.floor(i / day)) {
-                        document.getElementById(i.toString()).children[1].style.background = "black";
+//                        document.getElementById(i.toString()).children[1].style.background = "#b3231b";
+                        $('#' + i.toString()).children().css('background-color', 'darkRed');
                         day += 5;
                     }
                     else {
-                        if (document.getElementById(i.toString()).children[1].style.backgroundColor == "black") {
-                            document.getElementById(i.toString()).children[1].style.background = "#9e9e9e";
+//                        console.log($('#'+i.toString()).children().css("background-color"));
+                        $('#' + i.toString()).children().css('background-color', '#9e9e9e');
+//                        if ($('#'+i.toString()).children().css("background-color") == 'blue'){
+//                            console.log("ASFFD");
+//                            $('#'+i.toString()).children().css('background-color', 'white');
+//                        }
 
-                        }
+//                        if (document.getElementById(i.toString()).children[1].style.backgroundColor == "#b3231b") {
+//                            document.getElementById(i.toString()).children[1].style.background = "#9e9e9e";
+//
+//                        }
                     }
                 }
             }
             else {
                 for (var i = 1; i <= 110; i++) {
-                    if (document.getElementById(i.toString()).children[1].style.backgroundColor == "black") {
-                        document.getElementById(i.toString()).children[1].style.background = "#9e9e9e";
-                    }
+                    $('#' + i.toString()).children().css('background-color', '#9e9e9e');
+//                        if ($('#'+i.toString()).children().css("background-color") == 'blue'){
+//                            console.log("ASFFD");
+//                            $('#'+i.toString()).children().css('background-color', 'white');
+//                        }
+
+//                    if (document.getElementById(i.toString()).children[1].style.backgroundColor == "#b3231b") {
+//                        document.getElementById(i.toString()).children[1].style.background = "#9e9e9e";
+//                    }
                 }
             }
         }
@@ -815,32 +885,16 @@
         }
         ;
 
+
         // rank means if it is student or teacher or admin
-        var rank = "admin";
+        var actual_user = "reguly3";
 
-
-        // dorobit porovnavanie s databazou
-
-        function logic_division() {
-            for (var i = 1; i <= 110; i++) {
-                if (rank == "student") {
-                    if (i < 71) {
-                        document.getElementById(i.toString()).style.background = "black";
-                    }
-                }
-                else if (rank == "ucitel") {
-                    if (i >= 71) {
-                        document.getElementById(i.toString()).style.background = "black";
-                    }
-                }
-            }
-        }
-        ;
 
         function do_stuff() {
-            get_reservations_from_dtb();
+
+//            get_reservations_from_dtb();
             change_bg_color();
-            logic_division();
+
         }
         ;
 
