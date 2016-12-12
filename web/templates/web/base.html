@@ -30,12 +30,15 @@
                 <h4 class="modal-title" id="modal_label_admin"></h4>
             </div>
 
-            <div class="modal-body" id="modal_body_admin" style="overflow-y: scroll;">
+            <div class="modal-body" id="modal_body_admin">
                 <!--ajax success content here-->
+            </div>
+            <div class="form-group" id="note_for_block_admin" style="margin:15px;">
+
             </div>
             <!--note for delete if admin is logged in-->
             <div class="form-group" id="note_for_delete_admin" style="margin:15px;">
-                <label for="comment">Poznámka pre odhlásenie:</label>
+                <label for="comment_admin">Poznámka pre odhlásenie:</label>
                 <textarea class="form-control" rows="4" id="comment_admin"
                           placeholder="Ahojte, musel som Vás odhlásiť, pretože ..."></textarea>
                 <br>
@@ -61,7 +64,7 @@
 
             </div>
 
-            <div class="modal-body" id="modal_body_user" style="overflow-y: scroll;">
+            <div class="modal-body" id="modal_body_user">
 
                 <!--ajax success content here-->
             </div>
@@ -90,7 +93,7 @@
                 <h4 class="modal-title" id="modal_label_save"></h4>
             </div>
             <div id="user_name" style="margin:15px;">Meno</div>
-            <div class="modal-body" id="modal_body_save" style="overflow-y: scroll;">
+            <div class="modal-body" id="modal_body_save">
                 <!--ajax success content here-->
             </div>
 
@@ -174,6 +177,19 @@
 
             // rank means if it is student or teacher or admin
 
+            function set_checked(id) {
+
+                if (document.getElementById(id).children[0].style.visibility == "visible"){
+                    if(document.getElementById(id).children[0].checked){
+                        document.getElementById(id).children[0].checked = false;
+                        grab_checked();
+                    }
+                    else{
+                        document.getElementById(id).children[0].checked = true;
+                        grab_checked();
+                    }
+                }
+            }
 
             function get_date_by_id(id) {
                 id = parseInt(id);
@@ -182,6 +198,9 @@
                 var date = null;
 
                 var array = document.getElementById('datepicker').value.split('/');
+
+                console.log(array,"asfasfas");
+
                 // get 5 days of the week
                 var d1 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
                 var d2 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
@@ -189,17 +208,35 @@
                 var d4 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
                 var d5 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
 
-                var md1 = d1.previous().monday();
-                var md2 = d2.previous().monday();
-                var md3 = d3.previous().monday();
-                var md4 = d4.previous().monday();
-                var md5 = d5.previous().monday();
+                if (d1.getDay() != 1) {
+                    var md1 = d1.previous().monday();
+                    var md2 = d2.previous().monday();
+                    var md3 = d3.previous().monday();
+                    var md4 = d4.previous().monday();
+                    var md5 = d5.previous().monday();
+                }
+                else {
+                    var md1 = d1;
+                    var md2 = d2;
+                    var md3 = d3;
+                    var md4 = d4;
+                    var md5 = d5;
+                }
+
 
                 var dd1 = md1;
                 var dd2 = md2.add(1).days();
                 var dd3 = md3.add(2).days();
                 var dd4 = md4.add(3).days();
                 var dd5 = md5.add(4).days();
+
+
+                console.log(array, 'array', dd1);
+                console.log(array, 'array', dd2);
+                console.log(array, 'array', dd3);
+                console.log(array, 'array', dd4);
+                console.log(array, 'array', dd5);
+
 
                 switch (day) {
                     case 1:
@@ -225,6 +262,9 @@
             // function which open particular day-lesson in new window
             function show_termin_info(id) {
 
+                var date_by_id = get_date_by_id(id);
+
+                console.log("asfgasgsg",date_by_id);
 
                 $.ajax({
                     url: 'termin/' + id + '/',
@@ -238,6 +278,10 @@
 
                         thisIsAnObject = response['reservations'];
 
+                        console.log(thisIsAnObject);
+
+
+
                         $("#modal_label").html("Nahlad terminu");
 
 
@@ -245,6 +289,8 @@
 
                         var current_user_login = "user_login";
 
+
+                        var rank = "admin";
 
                         if (rank == "admin") {
 
@@ -257,7 +303,10 @@
                             }
                             table += '</table>';
 
+                            var data = '<label id="'+id + ' ' + get_date_by_id(id) +'">Poznámka pre zablokovanie:</label> <input type="text" class="form-control" id="block_note"> <br> <button type="button" class="btn btn-danger btn-lg" id="block_button_for_admin">Zablokovať</button>'
+
                             $("#modal_label_admin").html("<b>Zoznam prihlásených ľudí</b>");
+                            $("#note_for_block_admin").html(data);
                             $("#modal_body_admin").html(table);
                             $("#modal_window_admin").modal('show');
                         }
@@ -352,19 +401,19 @@
 
 
         var actual_user = "admin";
-        var rank = "ucitel";
+        var rank = "student";
 
 
 
 
 
 
-        function myCallback(result) {
-            // Code that depends on 'result'
-            var is_user_admin = result;
-            get_reservations_from_dtb(is_user_admin);
-        }
-        admin_check_with_db(myCallback);
+//        function myCallback(result) {
+//            // Code that depends on 'result'
+//            var is_user_admin = result;
+//            get_reservations_from_dtb(is_user_admin);
+//        }
+//        admin_check_with_db(myCallback);
 
 
         function admin_check_with_db(callback) {
@@ -399,6 +448,9 @@
 
             // parse datepicker's date
             var array = document.getElementById('datepicker').value.split('/')
+
+            console.log("ARRAY", array);
+
             var d = new Date(array[2], array[1], array[0]);
             var day = mod((d.getDay() - 2), 7);
             // change old selected day --> red background to white
@@ -520,6 +572,7 @@
             return today;
         }
         document.getElementById('datepicker').value = date_today();
+        get_reservations_from_dtb();
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------
@@ -563,6 +616,7 @@
             var date = null;
 
             var array = document.getElementById('datepicker').value.split('/');
+            console.log("array", array);
             // get 5 days of the week
             var d1 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
             var d2 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
@@ -570,11 +624,25 @@
             var d4 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
             var d5 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
 
-            var md1 = d1.previous().monday();
-            var md2 = d2.previous().monday();
-            var md3 = d3.previous().monday();
-            var md4 = d4.previous().monday();
-            var md5 = d5.previous().monday();
+            if (d1.getDay() != 1) {
+                var md1 = d1.previous().monday();
+                var md2 = d2.previous().monday();
+                var md3 = d3.previous().monday();
+                var md4 = d4.previous().monday();
+                var md5 = d5.previous().monday();
+            }
+            else {
+                var md1 = d1;
+                var md2 = d2;
+                var md3 = d3;
+                var md4 = d4;
+                var md5 = d5;
+            }
+//            var md1 = d1.previous().monday();
+//            var md2 = d2.previous().monday();
+//            var md3 = d3.previous().monday();
+//            var md4 = d4.previous().monday();
+//            var md5 = d5.previous().monday();
 
             var dd1 = md1;
             var dd2 = md2.add(1).days();
@@ -646,7 +714,7 @@
                         $("#modal_window_save").modal('hide');
                         get_reservations_from_dtb();
                         $('#div').html("<h3>Vyberte si termíny</h3>");
-                        console.log(response);
+//                        console.log(response);
 
                     },
                     error: function (xhr, errmsg, err) {
@@ -657,6 +725,48 @@
             // function call
             save_to_dtb();
         });
+
+        $('#block_button_for_admin').click(function () {
+            console.log("block-admin");
+        });
+
+//        $('#modal-block_admin').click(function () {
+//
+//            var note = $("#block_note");
+//
+////            var time_date_login = $("#block_note");
+//
+//            console.log("cheat ", note);
+//
+////            console.log("cheat " + note.parentNode.children[0].id);
+//
+//            function block_registration() {
+////                    var csrftoken = getCookie('csrftoken');
+//                $.ajax({
+//                    url: window.location.href, // the endpoint,commonly same url
+//                    type: "POST", // http method
+//                    data: {
+////                            csrfmiddlewaretoken: csrftoken,
+//                        note: note,
+//                        block_registration: "True",
+//
+//                    },
+//                    // when success then get data from response and re-render data on page
+//                    success: function (response) {
+//                        $("#modal_window_admin").modal('hide');
+////                        get_reservations_from_dtb();
+//                        console.log(response);
+//
+//                    },
+//                    error: function (xhr, errmsg, err) {
+//                        console.log("Error " + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+//                    }
+//                });
+//            }
+//            // function call
+////            block_registration();
+//        });
+
 
         $('#modal-delete_admin').click(function () {
 
@@ -689,7 +799,7 @@
                     success: function (response) {
                         $("#modal_window_admin").modal('hide');
                         get_reservations_from_dtb();
-                        console.log(response);
+//                        console.log(response);
 
                     },
                     error: function (xhr, errmsg, err) {
@@ -738,7 +848,7 @@
                     success: function (response) {
                         $("#modal_window_user").modal('hide');
                         get_reservations_from_dtb();
-                        console.log(response);
+//                        console.log(response);
 
                     },
                     error: function (xhr, errmsg, err) {
@@ -794,7 +904,7 @@
                     success: function (response) {
                         $("#modal_window_user").modal('hide');
 //                        get_reservations_from_dtb();
-                        console.log(response);
+//                        console.log(response);
 
                     },
                     error: function (xhr, errmsg, err) {
@@ -880,7 +990,7 @@
         ;
 
         function do_stuff() {
-            get_reservations_from_dtb();
+//            get_reservations_from_dtb();
             change_bg_color();
         }
         ;

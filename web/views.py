@@ -179,6 +179,24 @@ def hala(request):
 
                 return JsonResponse(response_data)
 
+            elif request.POST.get('block_registration'):
+
+                print("request.POST", request.POST)
+
+                time_date_login = request.POST.getlist('time_date_login[]')
+                note = request.POST.get('note')
+
+                # for i in range(len(notes)):
+                #     split = time_date_login[i].split(' ')
+                #
+                # Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
+                #                                time=unicode(split[0])).update(note=notes[i])
+
+                response_data = {
+                    "message": "DONE",
+                }
+                return JsonResponse(response_data)
+
             # send reservations numbers to the view
             else:
 

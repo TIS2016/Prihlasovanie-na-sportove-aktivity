@@ -48,6 +48,9 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # for external authentication sources
+    'django.contrib.auth.middleware.RemoteUserMiddleware',
+
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -140,9 +143,22 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-if DEBUG:
-    STATIC_ROOT = os.path.join(BASE_DIR, "web", "static", "static_in_pro")
+# if DEBUG:
+STATIC_ROOT = os.path.join(BASE_DIR, "web", "static", "static_in_pro")
 
-    STATICFILES_DIRS = (
-        os.path.join(BASE_DIR, "web", "static", "web"),
-    )
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "web", "static", "web"),
+)
+
+# LDAP SETTINGS
+# https://pythonhosted.org/django-auth-ldap/_static/versions/1.0.19/index.html
+
+# Set backends
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.RemoteUserBackend',
+    # 'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend'
+)
+
+# LDAP Server
+AUTH_LDAP_SERVER_URI = "ldap://ldap.example.com"
