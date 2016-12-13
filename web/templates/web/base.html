@@ -101,6 +101,8 @@
             <div class="form-group" id="save-btn-last-check">
                 <button type="button" class="btn btn-danger btn-lg" id="modal-save" style="margin:15px;">Odoslať
                 </button>
+                <button type="button" class="btn btn-danger btn-lg" id="modal-block" style="margin:15px; " >Zablokovať
+                </button>
 
             </div>
 
@@ -570,6 +572,7 @@
                 }, function (response) {
 
                     document.getElementById("save-btn-last-check").style.visibility = "visible";
+                    document.getElementById("modal-block").style.visibility = "hidden";
 
 
                     var table = '<table class="table table-striped" style="width:100%" id="modal_table_save"><tr> <th>Zvolili ste si tieto terminy (' + response.number + '):</th> <th>Poznámka</th>';
@@ -581,7 +584,7 @@
 
                     var rank="admin";
                     if (rank=="admin"){
-                        document.getElementById("save-btn-last-check").innerHTML='<button type="button" class="btn btn-danger btn-lg" id="modal-save" style="margin:15px;">Odoslať</button><button type="button" class="btn btn-danger btn-lg" id="modal-block" style="margin:15px; " >Zablokovať</button>';
+                        document.getElementById("modal-block").style.visibility = "visible";
                     }
 
 
