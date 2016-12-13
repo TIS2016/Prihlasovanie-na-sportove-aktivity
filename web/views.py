@@ -102,6 +102,25 @@ def hala(request):
                     "message": "DONE",
                 }
                 return JsonResponse(response_data)
+            elif request.POST.get('save_block'):
+                times = request.POST.getlist('times[]')
+                notes = request.POST.getlist('notes[]')
+                dates = request.POST.getlist('dates[]')
+
+                print("DATES", request.POST)
+
+                for i in range(len(times)):
+                    print(times[i], times[i])
+
+                    time = unicode(times[i]).strip().split()
+
+                    Reservation.objects.create(login="user_login", name="user_name", surname="user_surname", room=room,
+                                               date=unicode(dates[i]), time=time[1], note=unicode(notes[i]), is_blocked="True")
+
+                response_data = {
+                    "message": "DONE",
+                }
+                return JsonResponse(response_data)
 
             elif request.POST.get('delete_admin'):
 

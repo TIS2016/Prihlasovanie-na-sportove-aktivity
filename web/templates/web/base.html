@@ -101,6 +101,7 @@
             <div class="form-group" id="save-btn-last-check">
                 <button type="button" class="btn btn-danger btn-lg" id="modal-save" style="margin:15px;">Odoslať
                 </button>
+
             </div>
 
         </div>
@@ -290,48 +291,28 @@
                         var current_user_login = "user_login";
 
 
-                        var rank = "admin";
 
-                        if (rank == "admin") {
-
-                            var additional_html;
-                            table += '<th>Odhlásiť</th>'
-
-                            for (i = 0; i < response.number; i++) {
-                                additional_html = '</td><td>Note link: ' + response.res_notes[i] + '</td><td id="id ' + id + '"><input style="margin-left:28px;" type="checkbox" id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '"></td>';
-                                table += '<tr><td>' + response['res_names'][i] + additional_html;
-                            }
-                            table += '</table>';
-
-                            var data = '<label id="'+id + ' ' + get_date_by_id(id) +'">Poznámka pre zablokovanie:</label> <input type="text" class="form-control" id="block_note"> <br> <button type="button" class="btn btn-danger btn-lg" id="block_button_for_admin">Zablokovať</button>'
-
-                            $("#modal_label_admin").html("<b>Zoznam prihlásených ľudí</b>");
-                            $("#note_for_block_admin").html(data);
-                            $("#modal_body_admin").html(table);
-                            $("#modal_window_admin").modal('show');
-                        }
-                        else {
-                            var additional_html;
+                        var additional_html;
 //                            table += '<th></th>';
 
 
-                            for (i = 0; i < response.number; i++) {
-                                <!--if(  response['date_check'] ==  document.getElementById('datepicker').value){-->
-                                if (current_user_login == response['res_logins'][i]) {
-                                    additional_html = '</td><td id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '"><input type="text" class="form-control" value="' + response['res_notes'][i] + '"></td>';
-                                }
-                                else {
-                                    additional_html = '</td><td id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '">' + response['res_notes'][i] + '</td>';
-                                }
-                                table += '<tr><td>' + response['res_names'][i] + additional_html;
-                                <!--}-->
+                        for (i = 0; i < response.number; i++) {
+                            <!--if(  response['date_check'] ==  document.getElementById('datepicker').value){-->
+                            if (current_user_login == response['res_logins'][i]) {
+                                additional_html = '</td><td id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '"><input type="text" class="form-control" value="' + response['res_notes'][i] + '"></td>';
                             }
-                            table += '</table>';
-
-                            $("#modal_label_user").html("Zoznam prihlásených ľudí");
-                            $("#modal_body_user").html(table);
-                            $("#modal_window_user").modal('show');
+                            else {
+                                additional_html = '</td><td id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '">' + response['res_notes'][i] + '</td>';
+                            }
+                            table += '<tr><td>' + response['res_names'][i] + additional_html;
+                            <!--}-->
                         }
+                        table += '</table>';
+
+                        $("#modal_label_user").html("Zoznam prihlásených ľudí");
+                        $("#modal_body_user").html(table);
+                        $("#modal_window_user").modal('show');
+
 
                     },
                     error: function (xhr, errmsg, err) {
@@ -590,6 +571,7 @@
 
                     document.getElementById("save-btn-last-check").style.visibility = "visible";
 
+
                     var table = '<table class="table table-striped" style="width:100%" id="modal_table_save"><tr> <th>Zvolili ste si tieto terminy (' + response.number + '):</th> <th>Poznámka</th>';
                     var additional_html = '</td><td><input type="text" class="form-control"></td>';
                     for (i = 0; i < response.number; i++) {
@@ -597,8 +579,17 @@
                     }
                     table += '</table>';
 
+                    var rank="admin";
+                    if (rank=="admin"){
+                        document.getElementById("save-btn-last-check").innerHTML='<button type="button" class="btn btn-danger btn-lg" id="modal-save" style="margin:15px;">Odoslať</button><button type="button" class="btn btn-danger btn-lg" id="modal-block" style="margin:15px; " >Zablokovať</button>';
+                    }
+
+
+
                     $("#modal_label_save").html("<b>Zhrnutie prihlásených termínov a pridanie poznámky</b>");
+
                     $("#modal_body_save").html(table);
+
                     $("#modal_window_save").modal('show');
 
                 });
@@ -726,9 +717,58 @@
             save_to_dtb();
         });
 
-        $('#block_button_for_admin').click(function () {
-            console.log("block-admin");
+        $('#modal-block').click(function () {
+            console.log("save_block");
+
+            var table = document.getElementsByName("modal_window_save");
+
+            var array = $("#modal_table_save tr td");
+
+            var times = [];
+            var notes = [];
+            var dates = [];
+            for (var i = 0; i < array.length; i++) {
+                if (i % 2 == 0) {
+                    times.push(array[i].innerHTML);
+                    var date = get_date_by_id(array[i].id.split(" ")[1]);
+                    dates.push(date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate());
+                }
+                else {
+                    console.log(array[i].children[0].value);
+                    notes.push(array[i].children[0].value);
+                }
+
+            }
+            function save_to_dtb() {
+//                    var csrftoken = getCookie('csrftoken');
+                $.ajax({
+                    url: window.location.href, // the endpoint,commonly same url
+                    type: "POST", // http method
+                    data: {
+//                            csrfmiddlewaretoken: csrftoken,
+                        times: times,
+                        notes: notes,
+                        dates: dates,
+                        save_block: "True",
+
+                    },
+                    // when success then get data from response and re-render data on page
+                    success: function (response) {
+                        $("#modal_window_save").modal('hide');
+                        get_reservations_from_dtb();
+                        $('#div').html("<h3>Vyberte si termíny</h3>");
+//                        console.log(response);
+
+                    },
+                    error: function (xhr, errmsg, err) {
+                        console.log("Error " + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                    }
+                });
+            }
+            // function call
+            save_to_dtb();
         });
+
 
 //        $('#modal-block_admin').click(function () {
 //
