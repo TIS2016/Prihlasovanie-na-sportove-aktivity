@@ -60,7 +60,8 @@ ROOT_URLCONF = 'booking.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "web", "tempaltes", "web")],
+        # 'DIRS': [os.path.join(BASE_DIR, "web", "tempaltes", "web")],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -144,11 +145,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # if DEBUG:
-STATIC_ROOT = os.path.join(BASE_DIR, "web", "static", "static_in_pro")
+# STATIC_ROOT = os.path.join(BASE_DIR, "web", "static", "static_in_pro")
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "web", "static", "web"),
-)
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, "web", "static",),
+# )
 
 # LDAP SETTINGS
 # https://pythonhosted.org/django-auth-ldap/_static/versions/1.0.19/index.html
