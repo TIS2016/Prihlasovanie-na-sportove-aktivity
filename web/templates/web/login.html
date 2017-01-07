@@ -1,0 +1,85 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <!-- Bootstrap core CSS -->
+    <link href=" {% static 'web/css/bootstrap.css' %} " rel="stylesheet">
+    <title>KTVS | Prihlasovanie</title>
+    <style>
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+
+        body {
+            margin-bottom: 60px;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #f5f5f5;
+            text-align: center;
+            vertical-align: middle;
+            line-height: 60px;
+
+        }
+    </style>
+</head>
+
+
+<body>
+
+<div class="navbar navbar-inverse navbar-static-top">
+    <a href="" class="navbar-brand"><b>Prihlasovanie na športové aktivity KTVŠ</b></a>
+</div>
+
+<div class="container">
+    <div class="login-content" style="max-width: 30em; margin:auto; margin-top: 4%;">
+        <img src="{% static 'web/images/loginSportPicture5.png' %}" alt="Picture">
+
+        <p><strong>KTVŠ</strong> Systém pre rezerváciu miestností je určený pre študentov a učiteľov Univerzity
+            Komenského,
+            pomocou ktorého je možné rezervovať si miestnosti pre športové aktivity. Pre jeho použitie je nutné
+            prihlásiť sa. Ak ešte nemáte vytvorený účet,  <a href="{% url 'register' %}" >Zaregistrujte sa</a></p>
+
+        <hr>
+        <form class="form-horizontal" action="" method="post">
+            {% csrf_token %}
+            {% include 'web/form_template.html' %}
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button class="btn btn-danger btn-lg" type="submit">Prihlásiť sa</button>
+                </div>
+            </div>
+        </form>
+        <a href="{% url 'register' %}" >Zaregistrujte sa</a>
+        </br>
+        </br>
+        </br>
+
+
+
+    </div>
+</div>
+
+<!--footer-->
+<footer class="footer">
+
+    <a href="https://uniba.sk/" target="_blank" class="btn btn-link" tableindex="0" role="button"
+       style="display: inline-block; margin-right:2%;">Unverzita
+        komenskeho</a>
+
+
+    <a href="http://ktvs.fmph.uniba.sk/" target="_blank" class="btn btn-link"
+       style="display: inline-block; margin-left:2%;">KTVŠ</a>
+
+</footer>
+
+
+</body>
+</html>

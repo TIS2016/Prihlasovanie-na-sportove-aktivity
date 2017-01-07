@@ -4,8 +4,14 @@ from django.conf.urls import url
 
 from . import views
 
+
 urlpatterns = [
-    url(r'^$', views.hala, name='hala'),
+    url(r'^$', views.UserLoginView.as_view(), name='login'),
+    url(r'^register/$', views.UserRegisterView.as_view(), name='register'),
+
+    url(r'^logout/$', views._logout, name='logout'),
+
+
     url(r'^termin/(?P<termin_id>\d+)/', views.hala_termin, name='hala_termin'),
     url(r'^terminy/', views.hala_terminy, name='hala_terminy'),
 
@@ -25,5 +31,7 @@ urlpatterns = [
     url(r'^sauna/termin/(?P<termin_id>\d+)/', views.sauna_termin, name='sauna_termin'),
     url(r'^sauna/terminy/', views.sauna_terminy, name='sauna_terminy'),
 
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
+
+# + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

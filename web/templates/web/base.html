@@ -92,7 +92,7 @@
                         aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="modal_label_save"></h4>
             </div>
-            <div id="user_name" style="margin:15px;">Meno</div>
+
             <div class="modal-body" id="modal_body_save">
                 <!--ajax success content here-->
             </div>
@@ -150,8 +150,8 @@
             // rank pre modalne ohna moznosti admin/student
 
 
-            var rank = "student";
-            //var rank = "admin";
+{#            var rank = "student";#}
+{#            var rank = "admin";#}
 
 
             var thisIsAnObject;
@@ -287,10 +287,11 @@
 
                         $("#modal_label").html("Nahlad terminu");
 
-
                         var table = '<table class="table table-striped" id="modal_table"><tr> <th>Prihlásený na tento termín (' + response.number + ')     </th> <th>Poznámka</th>';
 
-                        var current_user_login = "user_login";
+                        if (response['is_admin']){
+                            table += '<th>Ohdlásiť</th>';
+                        }
 
 
 
@@ -300,11 +301,22 @@
 
                         for (i = 0; i < response.number; i++) {
                             <!--if(  response['date_check'] ==  document.getElementById('datepicker').value){-->
-                            if (current_user_login == response['res_logins'][i]) {
+                            console.log("LOGINS:",response['is_admin']);
+
+                            if (response['res_allow_update'][i]) {
+
                                 additional_html = '</td><td id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '"><input type="text" class="form-control" value="' + response['res_notes'][i] + '"></td>';
+
+                                if (response['is_admin']){
+                                    additional_html += '<td><input type="checkbox" value="" id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '"></td>';
+                                }
                             }
                             else {
                                 additional_html = '</td><td id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '">' + response['res_notes'][i] + '</td>';
+
+                                if (response['is_admin']){
+                                    additional_html += '<td><input type="checkbox" value="" id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '"></td>';
+                                }
                             }
                             table += '<tr><td>' + response['res_names'][i] + additional_html;
                             <!--}-->
@@ -312,8 +324,16 @@
                         table += '</table>';
 
                         $("#modal_label_user").html("Zoznam prihlásených ľudí");
-                        $("#modal_body_user").html(table);
-                        $("#modal_window_user").modal('show');
+
+                        if (response['is_admin']){
+                            $("#modal_body_admin").html(table);
+                            $("#modal_window_admin").modal('show');
+                        }
+                        else{
+                            $("#modal_body_user").html(table);
+                           $("#modal_window_user").modal('show');
+                        }
+
 
 
                     },
@@ -383,7 +403,7 @@
 
 
 
-        var actual_user = "admin";
+
         var rank = "student";
 
 
@@ -399,32 +419,33 @@
 //        admin_check_with_db(myCallback);
 
 
-        function admin_check_with_db(callback) {
-
-
-            $.ajax({
-                url: window.location.href, // the endpoint,commonly same url
-                type: "POST", // http method
-                data: {
-//                            csrfmiddlewaretoken: csrftoken,
-                    actual_user: actual_user,
-                    get_admin: "True",
-
-                },
-//                async: false,
-                // when success then get data from response and re-render data on page
-                success: function (response) {
-                    var data = response['is_admin'];
-                    callback(data);
-
-                },
-                error: function (xhr, errmsg, err) {
-                    console.log("Error " + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-                }
-            });
-        };
+{#        function admin_check_with_db(callback) {#}
+{##}
+{##}
+{#            $.ajax({#}
+{#                url: window.location.href, // the endpoint,commonly same url#}
+{#                type: "POST", // http method#}
+{#                data: {#}
+{#//                            csrfmiddlewaretoken: csrftoken,#}
+{#                    actual_user: actual_user,#}
+{#                    get_admin: "True",#}
+{##}
+{#                },#}
+{#//                async: false,#}
+{#                // when success then get data from response and re-render data on page#}
+{#                success: function (response) {#}
+{#                    var data = response['is_admin'];#}
+{#                    callback(data);#}
+{##}
+{#                },#}
+{#                error: function (xhr, errmsg, err) {#}
+{#                    console.log("Error " + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console#}
+{#                }#}
+{#            });#}
+{#        };#}
 
         function get_reservations_from_dtb(is_user_admin) {
+
 
 
             console.log("is_user_admin", is_user_admin);
@@ -488,14 +509,21 @@
 //                        alert(json['reservations'])
                         var res = json['reservations'];
                         var capacity = json['capacity'];
+                        var is_admin = json['is_admin'];
+
                         for (var i = 0; i < res.length; i++) {
                             document.getElementById((i + 1).toString()).children[1].innerHTML = res[i] + "/" + capacity;
+                            // podmienka pre zobrazovanie checkboxov pri termine a rozdelenie admin/student/ucitel
 
                             if (res[i] == capacity) {
                                 document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
                             }
 
-                            else if (is_user_admin == false) {
+
+                            else if (is_admin == false) {
+
+
+                                document.getElementById("modal-block").style.visibility = "hidden";
 
                                 // treba este dorobit zistenie zo session ci je ucitel alebo student a podla toho nastavit rank
 
@@ -516,6 +544,7 @@
                                 }
                             }
                             else {
+
                                 document.getElementById((i + 1).toString()).children[0].style.visibility = "visible";
                             }
                         }
@@ -572,7 +601,7 @@
                 }, function (response) {
 
                     document.getElementById("save-btn-last-check").style.visibility = "visible";
-                    document.getElementById("modal-block").style.visibility = "hidden";
+
 
 
                     var table = '<table class="table table-striped" style="width:100%" id="modal_table_save"><tr> <th>Zvolili ste si tieto terminy (' + response.number + '):</th> <th>Poznámka</th>';
@@ -581,12 +610,6 @@
                         table += '<tr><td id="id ' + terminy[i] + '" >' + response['res_days'][i] + " " + response['res_times'][i] + additional_html;
                     }
                     table += '</table>';
-
-                    var rank="admin";
-                    if (rank=="admin"){
-                        document.getElementById("modal-block").style.visibility = "visible";
-                    }
-
 
 
                     $("#modal_label_save").html("<b>Zhrnutie prihlásených termínov a pridanie poznámky</b>");
@@ -690,6 +713,7 @@
                 }
 
             }
+
             function save_to_dtb() {
 //                    var csrftoken = getCookie('csrftoken');
                 $.ajax({
@@ -721,7 +745,7 @@
         });
 
         $('#modal-block').click(function () {
-            console.log("save_block");
+
 
             var table = document.getElementsByName("modal_window_save");
 
@@ -757,10 +781,15 @@
                     },
                     // when success then get data from response and re-render data on page
                     success: function (response) {
+                        if(response['not_empty']){
+                            alert("Niektory z terminov nie je prazdny")
+                        }
+                        else{
                         $("#modal_window_save").modal('hide');
                         get_reservations_from_dtb();
                         $('#div').html("<h3>Vyberte si termíny</h3>");
-//                        console.log(response);
+                        }
+
 
                     },
                     error: function (xhr, errmsg, err) {
@@ -771,44 +800,6 @@
             // function call
             save_to_dtb();
         });
-
-
-//        $('#modal-block_admin').click(function () {
-//
-//            var note = $("#block_note");
-//
-////            var time_date_login = $("#block_note");
-//
-//            console.log("cheat ", note);
-//
-////            console.log("cheat " + note.parentNode.children[0].id);
-//
-//            function block_registration() {
-////                    var csrftoken = getCookie('csrftoken');
-//                $.ajax({
-//                    url: window.location.href, // the endpoint,commonly same url
-//                    type: "POST", // http method
-//                    data: {
-////                            csrfmiddlewaretoken: csrftoken,
-//                        note: note,
-//                        block_registration: "True",
-//
-//                    },
-//                    // when success then get data from response and re-render data on page
-//                    success: function (response) {
-//                        $("#modal_window_admin").modal('hide');
-////                        get_reservations_from_dtb();
-//                        console.log(response);
-//
-//                    },
-//                    error: function (xhr, errmsg, err) {
-//                        console.log("Error " + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-//                    }
-//                });
-//            }
-//            // function call
-////            block_registration();
-//        });
 
 
         $('#modal-delete_admin').click(function () {
@@ -841,6 +832,8 @@
                     // when success then get data from response and re-render data on page
                     success: function (response) {
                         $("#modal_window_admin").modal('hide');
+                        $("#comment_admin").val('');
+
                         get_reservations_from_dtb();
 //                        console.log(response);
 
@@ -862,15 +855,13 @@
 
             console.log(array);
 
-            var current_user_login = "user_login";
 
             var time_date_login = [];
 
             for (var i = 0; i < array.length; i++) {
                 if (i % 2 == 1) {
-                    if (current_user_login == array[i].id.split(" ")[2]) {
-                        time_date_login.push(array[i].id);
-                    }
+                    console.log(array[i].id);
+                    time_date_login.push(array[i].id);
                 }
             }
 
@@ -889,9 +880,16 @@
                     },
                     // when success then get data from response and re-render data on page
                     success: function (response) {
-                        $("#modal_window_user").modal('hide');
-                        get_reservations_from_dtb();
-//                        console.log(response);
+                        var has = response["has"];
+                        console.log("HAS:",has);
+                        if(has){
+                            $("#modal_window_user").modal('hide');
+                            get_reservations_from_dtb();
+                        }
+                        else{
+                            alert("Na tomto termine nemate ziadnu registraciu");
+                        }
+
 
                     },
                     error: function (xhr, errmsg, err) {
@@ -901,12 +899,8 @@
             }
 
             // function call
-            if (time_date_login.length > 0) {
-                delete_from_dtb_user();
-            }
-            else {
-                alert("Na tomto termine nemate ziadnu registraciu");
-            }
+            delete_from_dtb_user();
+
         });
 
 
@@ -914,7 +908,6 @@
 
             var array = $("#modal_table tr td");
 
-            var current_user_login = "user_login";
 
             var time_date_login = [];
             var notes = [];
@@ -922,16 +915,21 @@
             for (var i = 0; i < array.length; i++) {
 
                 if (i % 2 == 1) {
-                    if (current_user_login == array[i].id.split(" ")[2]) {
-                        time_date_login.push(array[i].id);
+
+                    console.log(array, array[i]);
+                    try{
                         notes.push(array[i].children[0].value);
+                        time_date_login.push(array[i].id);
+                    }catch (TypeError){
+                        continue;
                     }
                 }
             }
+            console.log("NOTES:",notes)
 
             console.log(time_date_login);
 
-            function delete_from_dtb_user() {
+            function update_dtb_user_note() {
 //                    var csrftoken = getCookie('csrftoken');
                 $.ajax({
                     url: window.location.href, // the endpoint,commonly same url
@@ -945,9 +943,17 @@
                     },
                     // when success then get data from response and re-render data on page
                     success: function (response) {
-                        $("#modal_window_user").modal('hide');
-//                        get_reservations_from_dtb();
-//                        console.log(response);
+
+                        console.log(response);
+
+{#                        $("#modal_window_user").modal('hide');#}
+
+                        if (response['has']){
+                            $("#modal_window_user").modal('hide');
+                        }
+                        else{
+                            alert("Na tomto termine nemate ziadnu registraciu");
+                        }
 
                     },
                     error: function (xhr, errmsg, err) {
@@ -957,12 +963,7 @@
             }
 
             // function call
-            if (time_date_login.length > 0) {
-                delete_from_dtb_user();
-            }
-            else {
-                alert("Na tomto termine nemate ziadnu registraciu");
-            }
+            update_dtb_user_note();
         });
 
 
