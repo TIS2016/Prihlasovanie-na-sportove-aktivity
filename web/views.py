@@ -163,7 +163,7 @@ DAYS = {
 # @ensure_csrf_cookie
 def hala(request):
     room = Room.objects.get(name='hala')
-    capacity = room.capacity
+    capacity = 3 #room.capacity
 
     context = {
         "times": TIMES,
@@ -250,7 +250,7 @@ def hala(request):
                             time = unicode(times[i]).strip().split()
 
                             Reservation.objects.create(login=username, name=first_name, surname=last_name, room=room,
-                                                   date=unicode(dates[i]), time=unicode(time[1]), note=unicode(notes[i]), is_blocked="True")
+                                                   date=unicode(dates[i]), time=unicode(time[1]), note=unicode("Zablokovany Termin: " + notes[i]), is_blocked="True")
 
                         response_data = {
                             "message": "DONE",
@@ -342,15 +342,20 @@ def hala(request):
                     # print(fri)
 
                     result = list()
+                    blocked = list()
                     for time in TIMES:
                         for day_date in [mon, tue, wed, thu, fri]:
-                            r = Reservation.objects.filter(date=day_date, time=time, room=room).count()
-                            result.append(r)
+                            r = Reservation.objects.filter(date=day_date, time=time, room=room)
+                            result.append(r.count())
+                            # print(r.values_list('is_blocked', flat=True))
+                            blocked.append(bool(r.values_list('is_blocked', flat=True)))
+
 
                     response_data = {
                         "reservations": result,
                         "capacity": capacity,
                         "is_admin": is_admin,
+                        "is_blocked": blocked,
 
                     }
                     return JsonResponse(response_data)  # Get goes here

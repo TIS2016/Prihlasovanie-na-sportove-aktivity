@@ -101,7 +101,7 @@
             <div class="form-group" id="save-btn-last-check">
                 <button type="button" class="btn btn-danger btn-lg" id="modal-save" style="margin:15px;">Odoslať
                 </button>
-                <button type="button" class="btn btn-danger btn-lg" id="modal-block" style="margin:15px; " >Zablokovať
+                <button type="button" class="btn btn-danger btn-lg" id="modal-block" style="margin:15px; ">Zablokovať
                 </button>
 
             </div>
@@ -150,8 +150,8 @@
             // rank pre modalne ohna moznosti admin/student
 
 
-{#            var rank = "student";#}
-{#            var rank = "admin";#}
+            {#            var rank = "student";#}
+            {#            var rank = "admin";#}
 
 
             var thisIsAnObject;
@@ -182,12 +182,12 @@
 
             function set_checked(id) {
 
-                if (document.getElementById(id).children[0].style.visibility == "visible"){
-                    if(document.getElementById(id).children[0].checked){
+                if (document.getElementById(id).children[0].style.visibility == "visible") {
+                    if (document.getElementById(id).children[0].checked) {
                         document.getElementById(id).children[0].checked = false;
                         grab_checked();
                     }
-                    else{
+                    else {
                         document.getElementById(id).children[0].checked = true;
                         grab_checked();
                     }
@@ -202,7 +202,7 @@
 
                 var array = document.getElementById('datepicker').value.split('/');
 
-                console.log(array,"asfasfas");
+                console.log(array, "asfasfas");
 
                 // get 5 days of the week
                 var d1 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
@@ -267,7 +267,7 @@
 
                 var date_by_id = get_date_by_id(id);
 
-                console.log("asfgasgsg",date_by_id);
+                console.log("asfgasgsg", date_by_id);
 
                 $.ajax({
                     url: 'termin/' + id + '/',
@@ -284,15 +284,13 @@
                         console.log(thisIsAnObject);
 
 
-
                         $("#modal_label").html("Nahlad terminu");
 
                         var table = '<table class="table table-striped" id="modal_table"><tr> <th>Prihlásený na tento termín (' + response.number + ')     </th> <th>Poznámka</th>';
 
-                        if (response['is_admin']){
+                        if (response['is_admin']) {
                             table += '<th>Ohdlásiť</th>';
                         }
-
 
 
                         var additional_html;
@@ -301,20 +299,20 @@
 
                         for (i = 0; i < response.number; i++) {
                             <!--if(  response['date_check'] ==  document.getElementById('datepicker').value){-->
-                            console.log("LOGINS:",response['is_admin']);
+                            console.log("LOGINS:", response['is_admin']);
 
                             if (response['res_allow_update'][i]) {
 
                                 additional_html = '</td><td id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '"><input type="text" class="form-control" value="' + response['res_notes'][i] + '"></td>';
 
-                                if (response['is_admin']){
+                                if (response['is_admin']) {
                                     additional_html += '<td><input type="checkbox" value="" id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '"></td>';
                                 }
                             }
                             else {
                                 additional_html = '</td><td id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '">' + response['res_notes'][i] + '</td>';
 
-                                if (response['is_admin']){
+                                if (response['is_admin']) {
                                     additional_html += '<td><input type="checkbox" value="" id="' + response['res_times'][i] + ' ' + response['res_dates'][i] + ' ' + response['res_logins'][i] + '"></td>';
                                 }
                             }
@@ -325,15 +323,14 @@
 
                         $("#modal_label_user").html("Zoznam prihlásených ľudí");
 
-                        if (response['is_admin']){
+                        if (response['is_admin']) {
                             $("#modal_body_admin").html(table);
                             $("#modal_window_admin").modal('show');
                         }
-                        else{
+                        else {
                             $("#modal_body_user").html(table);
-                           $("#modal_window_user").modal('show');
+                            $("#modal_window_user").modal('show');
                         }
-
 
 
                     },
@@ -383,72 +380,11 @@
             return ((n % m) + m) % m;
         }
 
-        // fnction to get csrftoken from cookies which is used to comunicate with wsgi protocol
-//        function getCookie(name) {
-//            var cookieValue = null;
-//            if (document.cookie && document.cookie != '') {
-//                var cookies = document.cookie.split(';');
-//                for (var i = 0; i < cookies.length; i++) {
-//                    var cookie = jQuery.trim(cookies[i]);
-//                    // Does this cookie string begin with the name we want?
-//                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
-//                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-//                        break;
-//                    }
-//                }
-//            }
-//            return cookieValue;
-//        }
-
-
-
-
-
+        // rozhoduje ktore terminy uvidi ci rano alebo poobede
         var rank = "student";
 
 
-
-
-
-
-//        function myCallback(result) {
-//            // Code that depends on 'result'
-//            var is_user_admin = result;
-//            get_reservations_from_dtb(is_user_admin);
-//        }
-//        admin_check_with_db(myCallback);
-
-
-{#        function admin_check_with_db(callback) {#}
-{##}
-{##}
-{#            $.ajax({#}
-{#                url: window.location.href, // the endpoint,commonly same url#}
-{#                type: "POST", // http method#}
-{#                data: {#}
-{#//                            csrfmiddlewaretoken: csrftoken,#}
-{#                    actual_user: actual_user,#}
-{#                    get_admin: "True",#}
-{##}
-{#                },#}
-{#//                async: false,#}
-{#                // when success then get data from response and re-render data on page#}
-{#                success: function (response) {#}
-{#                    var data = response['is_admin'];#}
-{#                    callback(data);#}
-{##}
-{#                },#}
-{#                error: function (xhr, errmsg, err) {#}
-{#                    console.log("Error " + xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console#}
-{#                }#}
-{#            });#}
-{#        };#}
-
-        function get_reservations_from_dtb(is_user_admin) {
-
-
-
-            console.log("is_user_admin", is_user_admin);
+        function get_reservations_from_dtb() {
 
             // parse datepicker's date
             var array = document.getElementById('datepicker').value.split('/')
@@ -510,43 +446,57 @@
                         var res = json['reservations'];
                         var capacity = json['capacity'];
                         var is_admin = json['is_admin'];
+                        var is_blocked = json['is_blocked'];
 
                         for (var i = 0; i < res.length; i++) {
                             document.getElementById((i + 1).toString()).children[1].innerHTML = res[i] + "/" + capacity;
                             // podmienka pre zobrazovanie checkboxov pri termine a rozdelenie admin/student/ucitel
 
                             if (res[i] == capacity) {
+                                // ak je plny termin 3/3
                                 document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
                             }
-
-
-                            else if (is_admin == false) {
-
-
-                                document.getElementById("modal-block").style.visibility = "hidden";
-
-                                // treba este dorobit zistenie zo session ci je ucitel alebo student a podla toho nastavit rank
-
-
-                                if (rank == "student") {
-                                    if (i + 1 < 71) {
-                                        if (document.getElementById((i + 1).toString()).children.length == 3) {
-                                            document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
-                                        }
-                                    }
-                                }
-                                else if (rank == "ucitel") {
-                                    if (i + 1 >= 71) {
-                                        if (document.getElementById((i + 1).toString()).children.length == 3) {
-                                            document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
-                                        }
-                                    }
-                                }
-                            }
                             else {
-
+                                // spatne zobrazenie checkboxu pri odhlaseni z 1/1 na 0/1
                                 document.getElementById((i + 1).toString()).children[0].style.visibility = "visible";
+
+                                // bezny pouzivatel alebo admin - vidi vsetky terminy
+                                if (is_admin == false) {
+
+                                    // zobraz zablokuj tlacidlo
+                                    document.getElementById("modal-block").style.visibility = "hidden";
+
+                                    // rozdelenie na 2 logicke casi ucite/student
+                                    if (rank == "student") {
+                                        if (i + 1 < 71) {
+                                            if (document.getElementById((i + 1).toString()).children.length == 3) {
+                                                document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
+                                            }
+                                        }
+                                    }
+                                    else if (rank == "ucitel") {
+                                        if (i + 1 >= 71) {
+                                            if (document.getElementById((i + 1).toString()).children.length == 3) {
+                                                document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
+                                            }
+                                        }
+                                    }
+
+
+                                }
+                                else {
+
+                                    document.getElementById((i + 1).toString()).children[0].style.visibility = "visible";
+                                }
+
+                                if (is_blocked[i]){
+                                    if (document.getElementById((i + 1).toString()).children.length == 3) {
+                                        document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
+                                    }
+                                }
+
                             }
+
                         }
                     },
                     error: function (xhr, errmsg, err) {
@@ -554,6 +504,7 @@
                     }
                 });
             }
+
             // function call
             get_db_data();
         };
@@ -601,7 +552,6 @@
                 }, function (response) {
 
                     document.getElementById("save-btn-last-check").style.visibility = "visible";
-
 
 
                     var table = '<table class="table table-striped" style="width:100%" id="modal_table_save"><tr> <th>Zvolili ste si tieto terminy (' + response.number + '):</th> <th>Poznámka</th>';
@@ -740,6 +690,7 @@
                     }
                 });
             }
+
             // function call
             save_to_dtb();
         });
@@ -781,13 +732,13 @@
                     },
                     // when success then get data from response and re-render data on page
                     success: function (response) {
-                        if(response['not_empty']){
+                        if (response['not_empty']) {
                             alert("Niektory z terminov nie je prazdny")
                         }
-                        else{
-                        $("#modal_window_save").modal('hide');
-                        get_reservations_from_dtb();
-                        $('#div').html("<h3>Vyberte si termíny</h3>");
+                        else {
+                            $("#modal_window_save").modal('hide');
+                            get_reservations_from_dtb();
+                            $('#div').html("<h3>Vyberte si termíny</h3>");
                         }
 
 
@@ -797,6 +748,7 @@
                     }
                 });
             }
+
             // function call
             save_to_dtb();
         });
@@ -881,12 +833,12 @@
                     // when success then get data from response and re-render data on page
                     success: function (response) {
                         var has = response["has"];
-                        console.log("HAS:",has);
-                        if(has){
+                        console.log("HAS:", has);
+                        if (has) {
                             $("#modal_window_user").modal('hide');
                             get_reservations_from_dtb();
                         }
-                        else{
+                        else {
                             alert("Na tomto termine nemate ziadnu registraciu");
                         }
 
@@ -917,15 +869,15 @@
                 if (i % 2 == 1) {
 
                     console.log(array, array[i]);
-                    try{
+                    try {
                         notes.push(array[i].children[0].value);
                         time_date_login.push(array[i].id);
-                    }catch (TypeError){
+                    } catch (TypeError) {
                         continue;
                     }
                 }
             }
-            console.log("NOTES:",notes)
+            console.log("NOTES:", notes)
 
             console.log(time_date_login);
 
@@ -946,12 +898,12 @@
 
                         console.log(response);
 
-{#                        $("#modal_window_user").modal('hide');#}
+                        {#                        $("#modal_window_user").modal('hide');#}
 
-                        if (response['has']){
+                        if (response['has']) {
                             $("#modal_window_user").modal('hide');
                         }
-                        else{
+                        else {
                             alert("Na tomto termine nemate ziadnu registraciu");
                         }
 
