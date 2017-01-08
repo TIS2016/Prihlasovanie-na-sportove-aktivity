@@ -362,7 +362,12 @@ def hala(request):
                             r = Reservation.objects.filter(date=day_date, time=time, room=room)
                             result.append(r.count())
                             # print(r.values_list('is_blocked', flat=True))
-                            blocked.append(bool(r.values_list('is_blocked', flat=True)))
+
+
+                            if len(r.values_list('is_blocked', flat=True)) > 0:
+                                blocked.append(r.values_list('is_blocked', flat=True)[0])
+                            else:
+                                blocked.append(False)
 
 
                     response_data = {

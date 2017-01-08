@@ -449,60 +449,54 @@
                         var is_blocked = json['is_blocked'];
                         var is_student = json['is_student'];
 
-
-                        console.log("JE STUDENT", is_student)
-
                         for (var i = 0; i < res.length; i++) {
                             document.getElementById((i + 1).toString()).children[1].innerHTML = res[i] + "/" + capacity;
-                            // podmienka pre zobrazovanie checkboxov pri termine a rozdelenie admin/student/ucitel
 
-                            if (res[i] == capacity) {
-                                // ak je plny termin 3/3
-                                document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
-                            }
-                            else {
+                            // bezny pouzivatel alebo admin - vidi vsetky terminy
+                            if (is_admin == false) {
+
                                 // spatne zobrazenie checkboxu pri odhlaseni z 1/1 na 0/1
                                 document.getElementById((i + 1).toString()).children[0].style.visibility = "visible";
 
-                                // bezny pouzivatel alebo admin - vidi vsetky terminy
-                                if (is_admin == false) {
+                                // zobraz zablokuj tlacidlo
+                                document.getElementById("modal-block").style.visibility = "hidden";
 
-                                    // zobraz zablokuj tlacidlo
-                                    document.getElementById("modal-block").style.visibility = "hidden";
-
-                                    // rozdelenie na 2 logicke casi ucite/student
-                                    if (is_student != null) {
-                                        if (is_student) {
-                                            if (i + 1 < 71) {
-                                                if (document.getElementById((i + 1).toString()).children.length == 3) {
-                                                    document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
-                                                }
-                                            }
-                                        }
-                                        else {
-                                            if (i + 1 >= 71) {
-                                                if (document.getElementById((i + 1).toString()).children.length == 3) {
-                                                    document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
-                                                }
+                                // rozdelenie na 2 logicke casi ucite/student
+                                if (is_student != null) {
+                                    if (is_student) {
+                                        if (i + 1 < 71) {
+                                            if (document.getElementById((i + 1).toString()).children.length == 3) {
+                                                document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
                                             }
                                         }
                                     }
-
-
+                                    else {
+                                        if (i + 1 >= 71) {
+                                            if (document.getElementById((i + 1).toString()).children.length == 3) {
+                                                document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
+                                            }
+                                        }
+                                    }
                                 }
-                                else {
 
-                                    document.getElementById((i + 1).toString()).children[0].style.visibility = "visible";
+
+                                // ak je plny termin 3/3
+                                if (res[i] == capacity) {
+                                    document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
                                 }
-
+                                // ak je is_blocked true tak ho nastavy ako plny
                                 if (is_blocked[i]) {
                                     if (document.getElementById((i + 1).toString()).children.length == 3) {
                                         document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
                                     }
                                 }
 
-                            }
 
+                            }
+                            else {
+
+                                document.getElementById((i + 1).toString()).children[0].style.visibility = "visible";
+                            }
                         }
                     },
                     error: function (xhr, errmsg, err) {
