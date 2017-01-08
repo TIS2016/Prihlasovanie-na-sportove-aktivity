@@ -7,7 +7,7 @@ from django.core import serializers
 
 from django.template import Context, loader
 
-from web.models import Reservation, Room, Administrator
+from web.models import Reservation, Room, SchoolUser
 
 
 @register.filter
@@ -163,7 +163,7 @@ DAYS = {
 # @ensure_csrf_cookie
 def hala(request):
     room = Room.objects.get(name='hala')
-    capacity = 3 #room.capacity
+    capacity = room.capacity
 
     context = {
         "times": TIMES,
@@ -323,6 +323,20 @@ def hala(request):
             else:
                 if request.user.is_authenticated():
                     is_admin = request.user.is_staff
+                    is_student = None
+                    if not request.user.is_superuser:
+                        school_user = SchoolUser.objects.get(id=request.user.id)
+                        is_student = school_user.function
+
+
+                    # is_student = None
+                    # if not request.user.is_superuser:
+                    #     school_user = SchoolUser.objects.get(id=request.user.id)
+                    #     print("BENG",school_user)
+                    #     if school_user is not None:
+                    #         is_student = school_user.function
+
+
 
                     mon = unicode(request.POST.get('d1')).strip().split()
                     tue = unicode(request.POST.get('d2')).strip().split()
@@ -356,6 +370,7 @@ def hala(request):
                         "capacity": capacity,
                         "is_admin": is_admin,
                         "is_blocked": blocked,
+                        "is_student": is_student,
 
                     }
                     return JsonResponse(response_data)  # Get goes here

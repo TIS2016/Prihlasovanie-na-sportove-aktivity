@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Room(models.Model):
@@ -69,10 +70,11 @@ class Reservation(models.Model):
         db_table = 'reservation'
 
 
-class Administrator(models.Model):
-    login = models.CharField(max_length=100)
-    name = models.CharField(max_length=100)
-    surname = models.CharField(max_length=100)
+
+
+class SchoolUser(User):
+
+    function = models.BooleanField()
 
     def __str__(self):
         return '{}'.format(self.login)
@@ -80,8 +82,5 @@ class Administrator(models.Model):
     def __unicode__(self):
         return '{}'.format(self.login)
 
-    # def get_absolute_url(self):
-    #     return 'administrator/{}/'.format(self.id)
-
     class Meta:
-        db_table = 'administrator'
+        db_table = 'schooluser'

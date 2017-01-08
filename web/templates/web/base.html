@@ -447,6 +447,10 @@
                         var capacity = json['capacity'];
                         var is_admin = json['is_admin'];
                         var is_blocked = json['is_blocked'];
+                        var is_student = json['is_student'];
+
+
+                        console.log("JE STUDENT", is_student)
 
                         for (var i = 0; i < res.length; i++) {
                             document.getElementById((i + 1).toString()).children[1].innerHTML = res[i] + "/" + capacity;
@@ -467,17 +471,19 @@
                                     document.getElementById("modal-block").style.visibility = "hidden";
 
                                     // rozdelenie na 2 logicke casi ucite/student
-                                    if (rank == "student") {
-                                        if (i + 1 < 71) {
-                                            if (document.getElementById((i + 1).toString()).children.length == 3) {
-                                                document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
+                                    if (is_student != null) {
+                                        if (is_student) {
+                                            if (i + 1 < 71) {
+                                                if (document.getElementById((i + 1).toString()).children.length == 3) {
+                                                    document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
+                                                }
                                             }
                                         }
-                                    }
-                                    else if (rank == "ucitel") {
-                                        if (i + 1 >= 71) {
-                                            if (document.getElementById((i + 1).toString()).children.length == 3) {
-                                                document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
+                                        else {
+                                            if (i + 1 >= 71) {
+                                                if (document.getElementById((i + 1).toString()).children.length == 3) {
+                                                    document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
+                                                }
                                             }
                                         }
                                     }
@@ -489,7 +495,7 @@
                                     document.getElementById((i + 1).toString()).children[0].style.visibility = "visible";
                                 }
 
-                                if (is_blocked[i]){
+                                if (is_blocked[i]) {
                                     if (document.getElementById((i + 1).toString()).children.length == 3) {
                                         document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
                                     }
