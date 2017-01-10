@@ -8,7 +8,7 @@ from django.core import serializers
 from django.template import Context, loader
 
 from web.models import Reservation, Room, SchoolUser
-
+from django.core.mail import EmailMessage
 
 @register.filter
 def multiply(dictionary, value):
@@ -231,7 +231,7 @@ def hala(request):
                         number = Reservation.objects.filter(room=room, date=unicode(dates[i]),time=unicode(time[1])).count()
 
 
-                        print("NUMBEEEEEEEER", number)
+                        #print("NUMBEEEEEEEER", number)
 
                         if number > 0:
                             not_empty = True
@@ -259,16 +259,21 @@ def hala(request):
                         return JsonResponse(response_data)
 
             elif request.POST.get('delete_admin'):
-
-                print("request.POST", request.POST)
-
+                list_email_to_send = list()
                 time_date_login = request.POST.getlist('time_date_login[]')
+                body_message = request.POST.get('body_message')
 
                 for i in range(len(time_date_login)):
                     split = time_date_login[i].split(' ')
 
                     Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
                                                time=unicode(split[0])).delete()
+
+                    user_to_send_email = User.objects.get(username=unicode(split[2]))
+                    list_email_to_send.append(user_to_send_email.email)
+
+                email = EmailMessage('Odhlasenie z termimu', body_message, to=list_email_to_send)
+                email.send()
 
                 response_data = {
                     "message": "DONE",
@@ -550,15 +555,23 @@ def posilnovna(request):
 
             elif request.POST.get('delete_admin'):
 
-                print("request.POST", request.POST)
+                #print("request.POST", request.POST)
 
+                list_email_to_send = list()
                 time_date_login = request.POST.getlist('time_date_login[]')
+                body_message = request.POST.get('body_message')
 
                 for i in range(len(time_date_login)):
                     split = time_date_login[i].split(' ')
 
                     Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
                                                time=unicode(split[0])).delete()
+
+                    user_to_send_email = User.objects.get(username=unicode(split[2]))
+                    list_email_to_send.append(user_to_send_email.email)
+
+                email = EmailMessage('Odhlasenie z termimu', body_message, to=list_email_to_send)
+                email.send()
 
                 response_data = {
                     "message": "DONE",
@@ -832,15 +845,24 @@ def stena(request):
 
             elif request.POST.get('delete_admin'):
 
-                print("request.POST", request.POST)
+                #print("request.POST", request.POST)
 
+                list_email_to_send = list()
                 time_date_login = request.POST.getlist('time_date_login[]')
+                body_message = request.POST.get('body_message')
+
 
                 for i in range(len(time_date_login)):
                     split = time_date_login[i].split(' ')
 
                     Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
                                                time=unicode(split[0])).delete()
+
+                    user_to_send_email = User.objects.get(username=unicode(split[2]))
+                    list_email_to_send.append(user_to_send_email.email)
+
+                email = EmailMessage('Odhlasenie z termimu', body_message, to=list_email_to_send)
+                email.send()
 
                 response_data = {
                     "message": "DONE",
@@ -1114,15 +1136,23 @@ def sauna(request):
 
             elif request.POST.get('delete_admin'):
 
-                print("request.POST", request.POST)
+                #print("request.POST", request.POST)
 
+                list_email_to_send = list()
                 time_date_login = request.POST.getlist('time_date_login[]')
+                body_message = request.POST.get('body_message')
 
                 for i in range(len(time_date_login)):
                     split = time_date_login[i].split(' ')
 
                     Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
                                                time=unicode(split[0])).delete()
+
+                    user_to_send_email = User.objects.get(username=unicode(split[2]))
+                    list_email_to_send.append(user_to_send_email.email)
+
+                email = EmailMessage('Odhlasenie z termimu', body_message, to=list_email_to_send)
+                email.send()
 
                 response_data = {
                     "message": "DONE",

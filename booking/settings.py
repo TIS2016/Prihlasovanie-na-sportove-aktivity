@@ -166,4 +166,8 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # LDAP Server
-AUTH_LDAP_SERVER_URI = "ldap://ldap.example.com"
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'rezervaciaktvs@gmail.com'
+EMAIL_HOST_PASSWORD = 'simple123'

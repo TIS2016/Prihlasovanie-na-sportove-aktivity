@@ -768,8 +768,6 @@
 
             }
 
-            console.log(time_date_login);
-
             function delete_from_dtb_admin() {
 //                    var csrftoken = getCookie('csrftoken');
                 $.ajax({
@@ -779,6 +777,7 @@
 //                            csrfmiddlewaretoken: csrftoken,
                         time_date_login: time_date_login,
                         delete_admin: "True",
+                        body_message:  $("#comment_admin").val(),
 
                     },
                     // when success then get data from response and re-render data on page
