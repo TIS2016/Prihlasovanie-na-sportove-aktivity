@@ -468,30 +468,85 @@ def posilnovna(request):
             # save new reservations to the database
             if request.POST.get('save'):
 
+                if request.user.is_authenticated():
+                    username = request.user.username
+                    first_name = request.user.first_name
+                    last_name = request.user.last_name
+                    print("USERNAME:", username)
 
-                times = request.POST.getlist('times[]')
-                notes = request.POST.getlist('notes[]')
-                dates = request.POST.getlist('dates[]')
+                    times = request.POST.getlist('times[]')
+                    notes = request.POST.getlist('notes[]')
+                    dates = request.POST.getlist('dates[]')
 
-                first = request.POST.get('first_name')
-                last = request.POST.get('last_name')
-                username = request.POST.get('username')
+                    print("DATES", request.POST)
 
+                    for i in range(len(times)):
+                        print(times[i], times[i])
 
-                print("DATES", request.POST)
+                        time = unicode(times[i]).strip().split()
 
-                for i in range(len(times)):
-                    print(times[i], times[i])
+                        Reservation.objects.create(login=username, name=first_name, surname=last_name, room=room,
+                                                   date=unicode(dates[i]), time=time[1], note=unicode(notes[i]))
 
-                    time = unicode(times[i]).strip().split()
+                    response_data = {
+                        "message": "DONE",
+                    }
+                    return JsonResponse(response_data)
+                else:
+                    print("not_authentificated")
 
-                    Reservation.objects.create(login=username, name=first, surname=last, room=room,
-                                               date=unicode(dates[i]), time=time[1], note=unicode(notes[i]))
+            elif request.POST.get('save_block'):
 
-                response_data = {
-                    "message": "DONE",
-                }
-                return JsonResponse(response_data)
+                if request.user.is_authenticated():
+                    username = request.user.username
+                    first_name = request.user.first_name
+                    last_name = request.user.last_name
+
+                    times = request.POST.getlist('times[]')
+                    notes = request.POST.getlist('notes[]')
+                    dates = request.POST.getlist('dates[]')
+
+                    print("DATES", request.POST)
+
+                    number = None
+                    not_empty = False
+
+                    for i in range(len(times)):
+                        print(times[i], times[i])
+
+                        time = unicode(times[i]).strip().split()
+
+                        number = Reservation.objects.filter(room=room, date=unicode(dates[i]),
+                                                            time=unicode(time[1])).count()
+
+                        print("NUMBEEEEEEEER", number)
+
+                        if number > 0:
+                            not_empty = True
+
+                    if not_empty:
+                        response_data = {
+                            "message": "DONE",
+                            "not_empty": not_empty,
+                        }
+                        return JsonResponse(response_data)
+
+                    else:
+                        for i in range(len(times)):
+                            print(times[i], times[i])
+
+                            time = unicode(times[i]).strip().split()
+
+                            Reservation.objects.create(login=username, name=first_name, surname=last_name, room=room,
+                                                       date=unicode(dates[i]), time=unicode(time[1]),
+                                                       note=unicode("Zablokovany Termin: " + notes[i]),
+                                                       is_blocked="True")
+
+                        response_data = {
+                            "message": "DONE",
+                            "not_empty": 0,
+                        }
+                        return JsonResponse(response_data)
 
             elif request.POST.get('delete_admin'):
 
@@ -511,74 +566,108 @@ def posilnovna(request):
                 return JsonResponse(response_data)
 
             elif request.POST.get('delete_user'):
+                if request.user.is_authenticated():
+                    username = request.user.username
+                    has = False
+                    print("request.POST", request.POST)
 
-                print("request.POST", request.POST)
+                    time_date_login = request.POST.getlist('time_date_login[]')
 
-                time_date_login = request.POST.getlist('time_date_login[]')
+                    for i in range(len(time_date_login)):
+                        split = time_date_login[i].split(' ')
+                        if split[2] == username:
+                            has = True
+                            Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
+                                                       time=unicode(split[0])).delete()
 
-                for i in range(len(time_date_login)):
-                    split = time_date_login[i].split(' ')
-
-                    Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
-                                               time=unicode(split[0])).delete()
-
-                response_data = {
-                    "message": "DONE",
-                }
-                return JsonResponse(response_data)
+                    response_data = {
+                        "message": "DONE",
+                        "has": has,
+                    }
+                    return JsonResponse(response_data)
 
             elif request.POST.get('update_user'):
+                if request.user.is_authenticated():
+                    username = request.user.username
+                    has = False
+                    print("request.POST", request.POST)
 
-                print("request.POST", request.POST)
+                    time_date_login = request.POST.getlist('time_date_login[]')
+                    notes = request.POST.getlist('notes[]')
 
-                time_date_login = request.POST.getlist('time_date_login[]')
-                notes = request.POST.getlist('notes[]')
+                    for i in range(len(notes)):
+                        split = time_date_login[i].split(' ')
+                        print("SPLIT2", split[2])
+                        if split[2] == username:
+                            has = True
+                            Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
+                                                       time=unicode(split[0])).update(note=notes[i])
 
-                for i in range(len(notes)):
-                    split = time_date_login[i].split(' ')
-
-                    Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
-                                               time=unicode(split[0])).update(note=notes[i])
-
-                response_data = {
-                    "message": "DONE",
-                }
-                return JsonResponse(response_data)
+                    response_data = {
+                        "message": "DONE",
+                        "has": has,
+                    }
+                    return JsonResponse(response_data)
 
             # send reservations numbers to the view
             else:
+                if request.user.is_authenticated():
+                    is_admin = request.user.is_staff
+                    is_student = None
+                    if not request.user.is_superuser:
+                        school_user = SchoolUser.objects.get(id=request.user.id)
+                        is_student = school_user.function
 
-                mon = unicode(request.POST.get('d1')).strip().split()
-                tue = unicode(request.POST.get('d2')).strip().split()
-                wed = unicode(request.POST.get('d3')).strip().split()
-                thu = unicode(request.POST.get('d4')).strip().split()
-                fri = unicode(request.POST.get('d5')).strip().split()
+                    # is_student = None
+                    # if not request.user.is_superuser:
+                    #     school_user = SchoolUser.objects.get(id=request.user.id)
+                    #     print("BENG",school_user)
+                    #     if school_user is not None:
+                    #         is_student = school_user.function
 
-                # print(months.get(mon[1]), mon[2], mon[3])
 
-                mon = "{}-{}-{}".format(mon[3], MONTHS.get(mon[1]), mon[2])
-                tue = "{}-{}-{}".format(tue[3], MONTHS.get(tue[1]), tue[2])
-                wed = "{}-{}-{}".format(wed[3], MONTHS.get(wed[1]), wed[2])
-                thu = "{}-{}-{}".format(thu[3], MONTHS.get(thu[1]), thu[2])
-                fri = "{}-{}-{}".format(fri[3], MONTHS.get(fri[1]), fri[2])
 
-                # print(mon)
-                # print(fri)
+                    mon = unicode(request.POST.get('d1')).strip().split()
+                    tue = unicode(request.POST.get('d2')).strip().split()
+                    wed = unicode(request.POST.get('d3')).strip().split()
+                    thu = unicode(request.POST.get('d4')).strip().split()
+                    fri = unicode(request.POST.get('d5')).strip().split()
 
-                result = list()
-                for time in TIMES:
-                    for day_date in [mon, tue, wed, thu, fri]:
-                        r = Reservation.objects.filter(date=day_date, time=time, room=room).count()
-                        result.append(r)
+                    # print(months.get(mon[1]), mon[2], mon[3])
 
-                response_data = {
-                    "reservations": result,
-                    "capacity": capacity,
+                    mon = "{}-{}-{}".format(mon[3], MONTHS.get(mon[1]), mon[2])
+                    tue = "{}-{}-{}".format(tue[3], MONTHS.get(tue[1]), tue[2])
+                    wed = "{}-{}-{}".format(wed[3], MONTHS.get(wed[1]), wed[2])
+                    thu = "{}-{}-{}".format(thu[3], MONTHS.get(thu[1]), thu[2])
+                    fri = "{}-{}-{}".format(fri[3], MONTHS.get(fri[1]), fri[2])
 
-                }
-                return JsonResponse(response_data)
+                    # print(mon)
+                    # print(fri)
 
-    # Get goes here
+                    result = list()
+                    blocked = list()
+                    for time in TIMES:
+                        for day_date in [mon, tue, wed, thu, fri]:
+                            r = Reservation.objects.filter(date=day_date, time=time, room=room)
+                            result.append(r.count())
+                            # print(r.values_list('is_blocked', flat=True))
+
+
+                            if len(r.values_list('is_blocked', flat=True)) > 0:
+                                blocked.append(r.values_list('is_blocked', flat=True)[0])
+                            else:
+                                blocked.append(False)
+
+                    response_data = {
+                        "reservations": result,
+                        "capacity": capacity,
+                        "is_admin": is_admin,
+                        "is_blocked": blocked,
+                        "is_student": is_student,
+
+                    }
+                    return JsonResponse(response_data)  # Get goes here
+
     return TemplateResponse(request, 'web/posilnovna.html', context)
 
 
@@ -606,34 +695,40 @@ def posilnovna_termin(request, termin_id):
     room = Room.objects.get(name='posilnovna')
 
     if request.is_ajax():
-        print("datum", request.POST.get('date'))
+        if request.user.is_authenticated():
+            username = request.user.username
+            print("datum", request.POST.get('date'))
 
-        date = unicode(request.POST.get('date')).strip().split()
+            date = unicode(request.POST.get('date')).strip().split()
 
-        date = "{}-{}-{}".format(date[3], MONTHS.get(date[1]), date[2])
-        time = TIMES[(int(termin_id) - 1) // 5]
+            date = "{}-{}-{}".format(date[3], MONTHS.get(date[1]), date[2])
+            time = TIMES[(int(termin_id) - 1) // 5]
 
-        res = Reservation.objects.filter(date=date, time=time, room=room)
+            res = Reservation.objects.filter(date=date, time=time, room=room)
 
-        res_names = [r.name + " " + r.surname for r in res]
-        res_notes = [r.note for r in res]
-        res_times = [r.time for r in res]
-        res_dates = [r.date for r in res]
-        res_logins = [r.login for r in res]
+            res_names = [r.name + " " + r.surname for r in res]
+            res_notes = [r.note for r in res]
+            res_times = [r.time for r in res]
+            res_dates = [r.date for r in res]
+            res_logins = [r.login for r in res]
 
-        print("names", res_names)
-        print("notes", res_notes)
+            res_allow_update = [r.login == username for r in res]
 
-        response_data = {
-            "times": TIMES,
-            "res_names": res_names,
-            "res_logins": res_logins,
-            "res_dates": res_dates,
-            "res_times": res_times,
-            "res_notes": res_notes,
-            "number": res.count(),
-        }
-        return JsonResponse(response_data)
+            print("names", res_names)
+            print("notes", res_notes)
+
+            response_data = {
+                "times": TIMES,
+                "res_names": res_names,
+                "res_logins": res_logins,
+                "res_dates": res_dates,
+                "res_times": res_times,
+                "res_notes": res_notes,
+                "number": res.count(),
+                "res_allow_update": res_allow_update,
+                "is_admin": request.user.is_staff
+            }
+            return JsonResponse(response_data)
 
 
 # <-----------------------------> STENA <------------------------------------------>
@@ -655,24 +750,85 @@ def stena(request):
             # save new reservations to the database
             if request.POST.get('save'):
 
-                times = request.POST.getlist('times[]')
-                notes = request.POST.getlist('notes[]')
-                dates = request.POST.getlist('dates[]')
+                if request.user.is_authenticated():
+                    username = request.user.username
+                    first_name = request.user.first_name
+                    last_name = request.user.last_name
+                    print("USERNAME:", username)
 
-                print("DATES", request.POST)
+                    times = request.POST.getlist('times[]')
+                    notes = request.POST.getlist('notes[]')
+                    dates = request.POST.getlist('dates[]')
 
-                for i in range(len(times)):
-                    print(times[i], times[i])
+                    print("DATES", request.POST)
 
-                    time = unicode(times[i]).strip().split()
+                    for i in range(len(times)):
+                        print(times[i], times[i])
 
-                    Reservation.objects.create(login="user_login", name="user_name", surname="user_surname", room=room,
-                                               date=unicode(dates[i]), time=time[1], note=unicode(notes[i]))
+                        time = unicode(times[i]).strip().split()
 
-                response_data = {
-                    "message": "DONE",
-                }
-                return JsonResponse(response_data)
+                        Reservation.objects.create(login=username, name=first_name, surname=last_name, room=room,
+                                                   date=unicode(dates[i]), time=time[1], note=unicode(notes[i]))
+
+                    response_data = {
+                        "message": "DONE",
+                    }
+                    return JsonResponse(response_data)
+                else:
+                    print("not_authentificated")
+
+            elif request.POST.get('save_block'):
+
+                if request.user.is_authenticated():
+                    username = request.user.username
+                    first_name = request.user.first_name
+                    last_name = request.user.last_name
+
+                    times = request.POST.getlist('times[]')
+                    notes = request.POST.getlist('notes[]')
+                    dates = request.POST.getlist('dates[]')
+
+                    print("DATES", request.POST)
+
+                    number = None
+                    not_empty = False
+
+                    for i in range(len(times)):
+                        print(times[i], times[i])
+
+                        time = unicode(times[i]).strip().split()
+
+                        number = Reservation.objects.filter(room=room, date=unicode(dates[i]),
+                                                            time=unicode(time[1])).count()
+
+                        print("NUMBEEEEEEEER", number)
+
+                        if number > 0:
+                            not_empty = True
+
+                    if not_empty:
+                        response_data = {
+                            "message": "DONE",
+                            "not_empty": not_empty,
+                        }
+                        return JsonResponse(response_data)
+
+                    else:
+                        for i in range(len(times)):
+                            print(times[i], times[i])
+
+                            time = unicode(times[i]).strip().split()
+
+                            Reservation.objects.create(login=username, name=first_name, surname=last_name, room=room,
+                                                       date=unicode(dates[i]), time=unicode(time[1]),
+                                                       note=unicode("Zablokovany Termin: " + notes[i]),
+                                                       is_blocked="True")
+
+                        response_data = {
+                            "message": "DONE",
+                            "not_empty": 0,
+                        }
+                        return JsonResponse(response_data)
 
             elif request.POST.get('delete_admin'):
 
@@ -692,74 +848,108 @@ def stena(request):
                 return JsonResponse(response_data)
 
             elif request.POST.get('delete_user'):
+                if request.user.is_authenticated():
+                    username = request.user.username
+                    has = False
+                    print("request.POST", request.POST)
 
-                print("request.POST", request.POST)
+                    time_date_login = request.POST.getlist('time_date_login[]')
 
-                time_date_login = request.POST.getlist('time_date_login[]')
+                    for i in range(len(time_date_login)):
+                        split = time_date_login[i].split(' ')
+                        if split[2] == username:
+                            has = True
+                            Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
+                                                       time=unicode(split[0])).delete()
 
-                for i in range(len(time_date_login)):
-                    split = time_date_login[i].split(' ')
-
-                    Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
-                                               time=unicode(split[0])).delete()
-
-                response_data = {
-                    "message": "DONE",
-                }
-                return JsonResponse(response_data)
+                    response_data = {
+                        "message": "DONE",
+                        "has": has,
+                    }
+                    return JsonResponse(response_data)
 
             elif request.POST.get('update_user'):
+                if request.user.is_authenticated():
+                    username = request.user.username
+                    has = False
+                    print("request.POST", request.POST)
 
-                print("request.POST", request.POST)
+                    time_date_login = request.POST.getlist('time_date_login[]')
+                    notes = request.POST.getlist('notes[]')
 
-                time_date_login = request.POST.getlist('time_date_login[]')
-                notes = request.POST.getlist('notes[]')
+                    for i in range(len(notes)):
+                        split = time_date_login[i].split(' ')
+                        print("SPLIT2", split[2])
+                        if split[2] == username:
+                            has = True
+                            Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
+                                                       time=unicode(split[0])).update(note=notes[i])
 
-                for i in range(len(notes)):
-                    split = time_date_login[i].split(' ')
-
-                    Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
-                                               time=unicode(split[0])).update(note=notes[i])
-
-                response_data = {
-                    "message": "DONE",
-                }
-                return JsonResponse(response_data)
+                    response_data = {
+                        "message": "DONE",
+                        "has": has,
+                    }
+                    return JsonResponse(response_data)
 
             # send reservations numbers to the view
             else:
+                if request.user.is_authenticated():
+                    is_admin = request.user.is_staff
+                    is_student = None
+                    if not request.user.is_superuser:
+                        school_user = SchoolUser.objects.get(id=request.user.id)
+                        is_student = school_user.function
 
-                mon = unicode(request.POST.get('d1')).strip().split()
-                tue = unicode(request.POST.get('d2')).strip().split()
-                wed = unicode(request.POST.get('d3')).strip().split()
-                thu = unicode(request.POST.get('d4')).strip().split()
-                fri = unicode(request.POST.get('d5')).strip().split()
+                    # is_student = None
+                    # if not request.user.is_superuser:
+                    #     school_user = SchoolUser.objects.get(id=request.user.id)
+                    #     print("BENG",school_user)
+                    #     if school_user is not None:
+                    #         is_student = school_user.function
 
-                # print(months.get(mon[1]), mon[2], mon[3])
 
-                mon = "{}-{}-{}".format(mon[3], MONTHS.get(mon[1]), mon[2])
-                tue = "{}-{}-{}".format(tue[3], MONTHS.get(tue[1]), tue[2])
-                wed = "{}-{}-{}".format(wed[3], MONTHS.get(wed[1]), wed[2])
-                thu = "{}-{}-{}".format(thu[3], MONTHS.get(thu[1]), thu[2])
-                fri = "{}-{}-{}".format(fri[3], MONTHS.get(fri[1]), fri[2])
 
-                # print(mon)
-                # print(fri)
+                    mon = unicode(request.POST.get('d1')).strip().split()
+                    tue = unicode(request.POST.get('d2')).strip().split()
+                    wed = unicode(request.POST.get('d3')).strip().split()
+                    thu = unicode(request.POST.get('d4')).strip().split()
+                    fri = unicode(request.POST.get('d5')).strip().split()
 
-                result = list()
-                for time in TIMES:
-                    for day_date in [mon, tue, wed, thu, fri]:
-                        r = Reservation.objects.filter(date=day_date, time=time, room=room).count()
-                        result.append(r)
+                    # print(months.get(mon[1]), mon[2], mon[3])
 
-                response_data = {
-                    "reservations": result,
-                    "capacity": capacity,
+                    mon = "{}-{}-{}".format(mon[3], MONTHS.get(mon[1]), mon[2])
+                    tue = "{}-{}-{}".format(tue[3], MONTHS.get(tue[1]), tue[2])
+                    wed = "{}-{}-{}".format(wed[3], MONTHS.get(wed[1]), wed[2])
+                    thu = "{}-{}-{}".format(thu[3], MONTHS.get(thu[1]), thu[2])
+                    fri = "{}-{}-{}".format(fri[3], MONTHS.get(fri[1]), fri[2])
 
-                }
-                return JsonResponse(response_data)
+                    # print(mon)
+                    # print(fri)
 
-    # Get goes here
+                    result = list()
+                    blocked = list()
+                    for time in TIMES:
+                        for day_date in [mon, tue, wed, thu, fri]:
+                            r = Reservation.objects.filter(date=day_date, time=time, room=room)
+                            result.append(r.count())
+                            # print(r.values_list('is_blocked', flat=True))
+
+
+                            if len(r.values_list('is_blocked', flat=True)) > 0:
+                                blocked.append(r.values_list('is_blocked', flat=True)[0])
+                            else:
+                                blocked.append(False)
+
+                    response_data = {
+                        "reservations": result,
+                        "capacity": capacity,
+                        "is_admin": is_admin,
+                        "is_blocked": blocked,
+                        "is_student": is_student,
+
+                    }
+                    return JsonResponse(response_data)  # Get goes here
+
     return TemplateResponse(request, 'web/stena.html', context)
 
 
@@ -787,34 +977,40 @@ def stena_termin(request, termin_id):
     room = Room.objects.get(name='stena')
 
     if request.is_ajax():
-        print("datum", request.POST.get('date'))
+        if request.user.is_authenticated():
+            username = request.user.username
+            print("datum", request.POST.get('date'))
 
-        date = unicode(request.POST.get('date')).strip().split()
+            date = unicode(request.POST.get('date')).strip().split()
 
-        date = "{}-{}-{}".format(date[3], MONTHS.get(date[1]), date[2])
-        time = TIMES[(int(termin_id) - 1) // 5]
+            date = "{}-{}-{}".format(date[3], MONTHS.get(date[1]), date[2])
+            time = TIMES[(int(termin_id) - 1) // 5]
 
-        res = Reservation.objects.filter(date=date, time=time, room=room)
+            res = Reservation.objects.filter(date=date, time=time, room=room)
 
-        res_names = [r.name + " " + r.surname for r in res]
-        res_notes = [r.note for r in res]
-        res_times = [r.time for r in res]
-        res_dates = [r.date for r in res]
-        res_logins = [r.login for r in res]
+            res_names = [r.name + " " + r.surname for r in res]
+            res_notes = [r.note for r in res]
+            res_times = [r.time for r in res]
+            res_dates = [r.date for r in res]
+            res_logins = [r.login for r in res]
 
-        print("names", res_names)
-        print("notes", res_notes)
+            res_allow_update = [r.login == username for r in res]
 
-        response_data = {
-            "times": TIMES,
-            "res_names": res_names,
-            "res_logins": res_logins,
-            "res_dates": res_dates,
-            "res_times": res_times,
-            "res_notes": res_notes,
-            "number": res.count(),
-        }
-        return JsonResponse(response_data)
+            print("names", res_names)
+            print("notes", res_notes)
+
+            response_data = {
+                "times": TIMES,
+                "res_names": res_names,
+                "res_logins": res_logins,
+                "res_dates": res_dates,
+                "res_times": res_times,
+                "res_notes": res_notes,
+                "number": res.count(),
+                "res_allow_update": res_allow_update,
+                "is_admin": request.user.is_staff
+            }
+            return JsonResponse(response_data)
 
 
 # <-----------------------------> SAUNA <------------------------------------------>
@@ -836,24 +1032,85 @@ def sauna(request):
             # save new reservations to the database
             if request.POST.get('save'):
 
-                times = request.POST.getlist('times[]')
-                notes = request.POST.getlist('notes[]')
-                dates = request.POST.getlist('dates[]')
+                if request.user.is_authenticated():
+                    username = request.user.username
+                    first_name = request.user.first_name
+                    last_name = request.user.last_name
+                    print("USERNAME:", username)
 
-                print("DATES", request.POST)
+                    times = request.POST.getlist('times[]')
+                    notes = request.POST.getlist('notes[]')
+                    dates = request.POST.getlist('dates[]')
 
-                for i in range(len(times)):
-                    print(times[i], times[i])
+                    print("DATES", request.POST)
 
-                    time = unicode(times[i]).strip().split()
+                    for i in range(len(times)):
+                        print(times[i], times[i])
 
-                    Reservation.objects.create(login="user_login", name="user_name", surname="user_surname", room=room,
-                                               date=unicode(dates[i]), time=time[1], note=unicode(notes[i]))
+                        time = unicode(times[i]).strip().split()
 
-                response_data = {
-                    "message": "DONE",
-                }
-                return JsonResponse(response_data)
+                        Reservation.objects.create(login=username, name=first_name, surname=last_name, room=room,
+                                                   date=unicode(dates[i]), time=time[1], note=unicode(notes[i]))
+
+                    response_data = {
+                        "message": "DONE",
+                    }
+                    return JsonResponse(response_data)
+                else:
+                    print("not_authentificated")
+
+            elif request.POST.get('save_block'):
+
+                if request.user.is_authenticated():
+                    username = request.user.username
+                    first_name = request.user.first_name
+                    last_name = request.user.last_name
+
+                    times = request.POST.getlist('times[]')
+                    notes = request.POST.getlist('notes[]')
+                    dates = request.POST.getlist('dates[]')
+
+                    print("DATES", request.POST)
+
+                    number = None
+                    not_empty = False
+
+                    for i in range(len(times)):
+                        print(times[i], times[i])
+
+                        time = unicode(times[i]).strip().split()
+
+                        number = Reservation.objects.filter(room=room, date=unicode(dates[i]),
+                                                            time=unicode(time[1])).count()
+
+                        print("NUMBEEEEEEEER", number)
+
+                        if number > 0:
+                            not_empty = True
+
+                    if not_empty:
+                        response_data = {
+                            "message": "DONE",
+                            "not_empty": not_empty,
+                        }
+                        return JsonResponse(response_data)
+
+                    else:
+                        for i in range(len(times)):
+                            print(times[i], times[i])
+
+                            time = unicode(times[i]).strip().split()
+
+                            Reservation.objects.create(login=username, name=first_name, surname=last_name, room=room,
+                                                       date=unicode(dates[i]), time=unicode(time[1]),
+                                                       note=unicode("Zablokovany Termin: " + notes[i]),
+                                                       is_blocked="True")
+
+                        response_data = {
+                            "message": "DONE",
+                            "not_empty": 0,
+                        }
+                        return JsonResponse(response_data)
 
             elif request.POST.get('delete_admin'):
 
@@ -873,73 +1130,108 @@ def sauna(request):
                 return JsonResponse(response_data)
 
             elif request.POST.get('delete_user'):
+                if request.user.is_authenticated():
+                    username = request.user.username
+                    has = False
+                    print("request.POST", request.POST)
 
-                print("request.POST", request.POST)
+                    time_date_login = request.POST.getlist('time_date_login[]')
 
-                time_date_login = request.POST.getlist('time_date_login[]')
+                    for i in range(len(time_date_login)):
+                        split = time_date_login[i].split(' ')
+                        if split[2] == username:
+                            has = True
+                            Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
+                                                       time=unicode(split[0])).delete()
 
-                for i in range(len(time_date_login)):
-                    split = time_date_login[i].split(' ')
-
-                    Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
-                                               time=unicode(split[0])).delete()
-
-                response_data = {
-                    "message": "DONE",
-                }
-                return JsonResponse(response_data)
+                    response_data = {
+                        "message": "DONE",
+                        "has": has,
+                    }
+                    return JsonResponse(response_data)
 
             elif request.POST.get('update_user'):
+                if request.user.is_authenticated():
+                    username = request.user.username
+                    has = False
+                    print("request.POST", request.POST)
 
-                print("request.POST", request.POST)
+                    time_date_login = request.POST.getlist('time_date_login[]')
+                    notes = request.POST.getlist('notes[]')
 
-                time_date_login = request.POST.getlist('time_date_login[]')
-                notes = request.POST.getlist('notes[]')
+                    for i in range(len(notes)):
+                        split = time_date_login[i].split(' ')
+                        print("SPLIT2", split[2])
+                        if split[2] == username:
+                            has = True
+                            Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
+                                                       time=unicode(split[0])).update(note=notes[i])
 
-                for i in range(len(notes)):
-                    split = time_date_login[i].split(' ')
-
-                    Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
-                                               time=unicode(split[0])).update(note=notes[i])
-
-                response_data = {
-                    "message": "DONE",
-                }
-                return JsonResponse(response_data)
+                    response_data = {
+                        "message": "DONE",
+                        "has": has,
+                    }
+                    return JsonResponse(response_data)
 
             # send reservations numbers to the view
             else:
+                if request.user.is_authenticated():
+                    is_admin = request.user.is_staff
+                    is_student = None
+                    if not request.user.is_superuser:
+                        school_user = SchoolUser.objects.get(id=request.user.id)
+                        is_student = school_user.function
 
-                mon = unicode(request.POST.get('d1')).strip().split()
-                tue = unicode(request.POST.get('d2')).strip().split()
-                wed = unicode(request.POST.get('d3')).strip().split()
-                thu = unicode(request.POST.get('d4')).strip().split()
-                fri = unicode(request.POST.get('d5')).strip().split()
+                    # is_student = None
+                    # if not request.user.is_superuser:
+                    #     school_user = SchoolUser.objects.get(id=request.user.id)
+                    #     print("BENG",school_user)
+                    #     if school_user is not None:
+                    #         is_student = school_user.function
 
-                # print(months.get(mon[1]), mon[2], mon[3])
 
-                mon = "{}-{}-{}".format(mon[3], MONTHS.get(mon[1]), mon[2])
-                tue = "{}-{}-{}".format(tue[3], MONTHS.get(tue[1]), tue[2])
-                wed = "{}-{}-{}".format(wed[3], MONTHS.get(wed[1]), wed[2])
-                thu = "{}-{}-{}".format(thu[3], MONTHS.get(thu[1]), thu[2])
-                fri = "{}-{}-{}".format(fri[3], MONTHS.get(fri[1]), fri[2])
 
-                # print(mon)
-                # print(fri)
+                    mon = unicode(request.POST.get('d1')).strip().split()
+                    tue = unicode(request.POST.get('d2')).strip().split()
+                    wed = unicode(request.POST.get('d3')).strip().split()
+                    thu = unicode(request.POST.get('d4')).strip().split()
+                    fri = unicode(request.POST.get('d5')).strip().split()
 
-                result = list()
-                for time in TIMES:
-                    for day_date in [mon, tue, wed, thu, fri]:
-                        r = Reservation.objects.filter(date=day_date, time=time, room=room).count()
-                        result.append(r)
+                    # print(months.get(mon[1]), mon[2], mon[3])
 
-                response_data = {
-                    "reservations": result,
-                    "capacity": capacity,
+                    mon = "{}-{}-{}".format(mon[3], MONTHS.get(mon[1]), mon[2])
+                    tue = "{}-{}-{}".format(tue[3], MONTHS.get(tue[1]), tue[2])
+                    wed = "{}-{}-{}".format(wed[3], MONTHS.get(wed[1]), wed[2])
+                    thu = "{}-{}-{}".format(thu[3], MONTHS.get(thu[1]), thu[2])
+                    fri = "{}-{}-{}".format(fri[3], MONTHS.get(fri[1]), fri[2])
 
-                }
-                return JsonResponse(response_data)
-    # Get goes here
+                    # print(mon)
+                    # print(fri)
+
+                    result = list()
+                    blocked = list()
+                    for time in TIMES:
+                        for day_date in [mon, tue, wed, thu, fri]:
+                            r = Reservation.objects.filter(date=day_date, time=time, room=room)
+                            result.append(r.count())
+                            # print(r.values_list('is_blocked', flat=True))
+
+
+                            if len(r.values_list('is_blocked', flat=True)) > 0:
+                                blocked.append(r.values_list('is_blocked', flat=True)[0])
+                            else:
+                                blocked.append(False)
+
+                    response_data = {
+                        "reservations": result,
+                        "capacity": capacity,
+                        "is_admin": is_admin,
+                        "is_blocked": blocked,
+                        "is_student": is_student,
+
+                    }
+                    return JsonResponse(response_data)  # Get goes here
+
     return TemplateResponse(request, 'web/sauna.html', context)
 
 
@@ -967,31 +1259,37 @@ def sauna_termin(request, termin_id):
     room = Room.objects.get(name='sauna')
 
     if request.is_ajax():
-        print("datum", request.POST.get('date'))
+        if request.user.is_authenticated():
+            username = request.user.username
+            print("datum", request.POST.get('date'))
 
-        date = unicode(request.POST.get('date')).strip().split()
+            date = unicode(request.POST.get('date')).strip().split()
 
-        date = "{}-{}-{}".format(date[3], MONTHS.get(date[1]), date[2])
-        time = TIMES[(int(termin_id) - 1) // 5]
+            date = "{}-{}-{}".format(date[3], MONTHS.get(date[1]), date[2])
+            time = TIMES[(int(termin_id) - 1) // 5]
 
-        res = Reservation.objects.filter(date=date, time=time, room=room)
+            res = Reservation.objects.filter(date=date, time=time, room=room)
 
-        res_names = [r.name + " " + r.surname for r in res]
-        res_notes = [r.note for r in res]
-        res_times = [r.time for r in res]
-        res_dates = [r.date for r in res]
-        res_logins = [r.login for r in res]
+            res_names = [r.name + " " + r.surname for r in res]
+            res_notes = [r.note for r in res]
+            res_times = [r.time for r in res]
+            res_dates = [r.date for r in res]
+            res_logins = [r.login for r in res]
 
-        print("names", res_names)
-        print("notes", res_notes)
+            res_allow_update = [r.login == username for r in res]
 
-        response_data = {
-            "times": TIMES,
-            "res_names": res_names,
-            "res_logins": res_logins,
-            "res_dates": res_dates,
-            "res_times": res_times,
-            "res_notes": res_notes,
-            "number": res.count(),
-        }
-        return JsonResponse(response_data)
+            print("names", res_names)
+            print("notes", res_notes)
+
+            response_data = {
+                "times": TIMES,
+                "res_names": res_names,
+                "res_logins": res_logins,
+                "res_dates": res_dates,
+                "res_times": res_times,
+                "res_notes": res_notes,
+                "number": res.count(),
+                "res_allow_update": res_allow_update,
+                "is_admin": request.user.is_staff
+            }
+            return JsonResponse(response_data)
