@@ -31,8 +31,6 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    # my apps
-    'web',
     # django apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -40,14 +38,23 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # third party apps
+    # ...
+    # my local apps
+    'web',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    # 'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # for external authentication sources
+    'django.contrib.auth.middleware.RemoteUserMiddleware',
+
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -57,7 +64,8 @@ ROOT_URLCONF = 'booking.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "web", "tempaltes", "web")],
+        # 'DIRS': [os.path.join(BASE_DIR, "web", "tempaltes", "web")],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -140,9 +148,26 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-if DEBUG:
-    STATIC_ROOT = os.path.join(BASE_DIR, "web", "static", "static_in_pro")
+# if DEBUG:
+# STATIC_ROOT = os.path.join(BASE_DIR, "web", "static", "static_in_pro")
 
-    STATICFILES_DIRS = (
-        os.path.join(BASE_DIR, "web", "static", "web"),
-    )
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, "web", "static",),
+# )
+
+# LDAP SETTINGS
+# https://pythonhosted.org/django-auth-ldap/_static/versions/1.0.19/index.html
+
+# Set backends
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.RemoteUserBackend',
+    # 'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend'
+)
+
+# LDAP Server
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'rezervaciaktvs@gmail.com'
+EMAIL_HOST_PASSWORD = 'simple123'

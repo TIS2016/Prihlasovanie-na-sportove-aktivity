@@ -1,0 +1,10 @@
+
+# ignore additional files from JetBrains
+.idea/
+
+# ignore .pyc files
+*.pyc
+
+# ignore python cache 
+.booking\__pycache__
+.web\__pycache__
