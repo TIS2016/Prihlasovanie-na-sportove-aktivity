@@ -45,7 +45,7 @@
         <p><strong>KTVŠ</strong> Systém pre rezerváciu miestností je určený pre študentov a učiteľov Univerzity
             Komenského,
             pomocou ktorého je možné rezervovať si miestnosti pre športové aktivity. Pre jeho použitie je nutné
-            prihlásiť sa. Ak ešte nemáte vytvorený účet,  <a href="{% url 'register' %}" >Zaregistrujte sa</a></p>
+            prihlásiť sa. Ak ešte nemáte vytvorený účet, <a href="{% url 'register' %}">Zaregistrujte sa</a></p>
 
         <hr>
         <form class="form-horizontal" action="" method="post">
@@ -53,15 +53,17 @@
             {% include 'web/form_template.html' %}
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
+                    {% if invalid %}
+                        <p><strong>Nespravne meno alebo heslo</strong></p>
+                    {% endif %}
                     <button class="btn btn-danger btn-lg" type="submit">Prihlásiť sa</button>
                 </div>
             </div>
         </form>
-        <a href="{% url 'register' %}" >Zaregistrujte sa</a>
+        <a href="{% url 'register' %}">Zaregistrujte sa</a>
         </br>
         </br>
         </br>
-
 
 
     </div>
