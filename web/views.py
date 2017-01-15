@@ -74,34 +74,17 @@ class UserLoginView(View):
         form = self.form_class(request.POST)
 
         if not request.user.is_authenticated():
-            print("NOT AUTH USER")
+
             user = authenticate(username=request.POST.get('username'),
                                 password=request.POST.get('password'))
-
-            print("NOT AUTH USER", user)
-
-
-
             if user is not None:
                 login(request, user)
-                print("username", user.username)
-                print("first_name", user.first_name)
-                print("last_name", user.last_name)
-                print("BEFORE REDIRECTTTT")
                 return redirect('/domov/hala/')
-
-        else:
-            print("AUTH USER")
-            user = User.objects.get(id=request.user.id)
-            print("AUTHENTIFIKOVANY")
-            print("USERNAME",user.username)
-            print("FIRST", user.first_name)
-            print("LAST", user.last_name)
-            print("EMAIL", user.email)
+            else:
+                return TemplateResponse(request, self.template_name, {'form': form, 'invalid': True})
 
 
 def _logout(request):
-    print("PRED ODHLASENIM USER", request.user)
     logout(request)
     return redirect('../')
 
