@@ -147,38 +147,11 @@
                 }
             }
 
-            // rank pre modalne ohna moznosti admin/student
-
-
-            {#            var rank = "student";#}
-            {#            var rank = "admin";#}
-
-
             var thisIsAnObject;
 
             function mod(n, m) {
                 return ((n % m) + m) % m;
             }
-            //            function getCrtfCookie(name) {
-            //                var cookieValue = null;
-            //                if (document.cookie && document.cookie != '') {
-            //                    var cookies = document.cookie.split(';');
-            //                    for (var i = 0; i < cookies.length; i++) {
-            //                        var cookie = jQuery.trim(cookies[i]);
-            //                        // Does this cookie string begin with the name we want?
-            //                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
-            //                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            //                            break;
-            //                        }
-            //                    }
-            //                }
-            //                return cookieValue;
-            //            }
-
-            //            var csrftoken = getCrtfCookie('csrftoken');
-
-
-            // rank means if it is student or teacher or admin
 
             function set_checked(id) {
 
@@ -201,8 +174,6 @@
                 var date = null;
 
                 var array = document.getElementById('datepicker').value.split('/');
-
-                console.log(array, "asfasfas");
 
                 // get 5 days of the week
                 var d1 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
@@ -234,13 +205,6 @@
                 var dd5 = md5.add(4).days();
 
 
-                console.log(array, 'array', dd1);
-                console.log(array, 'array', dd2);
-                console.log(array, 'array', dd3);
-                console.log(array, 'array', dd4);
-                console.log(array, 'array', dd5);
-
-
                 switch (day) {
                     case 1:
                         date = dd1;
@@ -267,8 +231,6 @@
 
                 var date_by_id = get_date_by_id(id);
 
-                console.log("asfgasgsg", date_by_id);
-
                 $.ajax({
                     url: 'termin/' + id + '/',
                     type: 'POST',
@@ -281,9 +243,6 @@
 
                         thisIsAnObject = response['reservations'];
 
-                        console.log(thisIsAnObject);
-
-
                         $("#modal_label").html("Nahlad terminu");
 
                         var table = '<table class="table table-striped" id="modal_table"><tr> <th>Prihlásený na tento termín (' + response.number + ')     </th> <th>Poznámka</th>';
@@ -292,14 +251,10 @@
                             table += '<th>Odhlásiť</th>';
                         }
 
-
                         var additional_html;
-//                            table += '<th></th>';
-
 
                         for (i = 0; i < response.number; i++) {
                             <!--if(  response['date_check'] ==  document.getElementById('datepicker').value){-->
-                            console.log("LOGINS:", response['is_admin']);
 
                             if (response['res_allow_update'][i]) {
 
@@ -340,7 +295,6 @@
                 });
             }
         </script>
-
 
         {% block week-grid %}
 
@@ -389,7 +343,6 @@
             // parse datepicker's date
             var array = document.getElementById('datepicker').value.split('/')
 
-            console.log("ARRAY", array);
 
             var d = new Date(array[2], array[1], array[0]);
             var day = mod((d.getDay() - 2), 7);
@@ -452,7 +405,7 @@
                         for (var i = 0; i < res.length; i++) {
                             document.getElementById((i + 1).toString()).children[1].innerHTML = res[i] + "/" + capacity;
 
-                            // bezny pouzivatel alebo admin - vidi vsetky terminy
+                            // bezny pouzivatel
                             if (is_admin == false) {
 
                                 // spatne zobrazenie checkboxu pri odhlaseni z 1/1 na 0/1
@@ -478,24 +431,21 @@
                                         }
                                     }
                                 }
+                            }
+                            // admin vidi vsetky terminy
+                            else {
+                                document.getElementById((i + 1).toString()).children[0].style.visibility = "visible";
+                            }
 
-
-                                // ak je plny termin 3/3
-                                if (res[i] == capacity) {
+                            // ak je plny termin 3/3
+                            if (res[i] == capacity) {
+                                document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
+                            }
+                            // ak je is_blocked true tak ho nastavy ako plny
+                            if (is_blocked[i]) {
+                                if (document.getElementById((i + 1).toString()).children.length == 3) {
                                     document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
                                 }
-                                // ak je is_blocked true tak ho nastavy ako plny
-                                if (is_blocked[i]) {
-                                    if (document.getElementById((i + 1).toString()).children.length == 3) {
-                                        document.getElementById((i + 1).toString()).children[0].style.visibility = "hidden";
-                                    }
-                                }
-
-
-                            }
-                            else {
-
-                                document.getElementById((i + 1).toString()).children[0].style.visibility = "visible";
                             }
                         }
                     },
@@ -583,7 +533,6 @@
             var date = null;
 
             var array = document.getElementById('datepicker').value.split('/');
-            console.log("array", array);
             // get 5 days of the week
             var d1 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
             var d2 = Date.parse(array[1] + "." + array[0] + "." + array[2]);
@@ -605,11 +554,6 @@
                 var md4 = d4;
                 var md5 = d5;
             }
-//            var md1 = d1.previous().monday();
-//            var md2 = d2.previous().monday();
-//            var md3 = d3.previous().monday();
-//            var md4 = d4.previous().monday();
-//            var md5 = d5.previous().monday();
 
             var dd1 = md1;
             var dd2 = md2.add(1).days();
@@ -642,7 +586,6 @@
 //----------------------------------------------------------------------------------------------------------------------
 
         $('#modal-save').click(function () {
-            console.log("save");
 
             var table = document.getElementsByName("modal_window_save");
 
@@ -658,7 +601,6 @@
                     dates.push(date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate());
                 }
                 else {
-                    console.log(array[i].children[0].value);
                     notes.push(array[i].children[0].value);
                 }
 
@@ -712,13 +654,11 @@
                     dates.push(date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate());
                 }
                 else {
-                    console.log(array[i].children[0].value);
                     notes.push(array[i].children[0].value);
                 }
 
             }
             function save_to_dtb() {
-//                    var csrftoken = getCookie('csrftoken');
                 $.ajax({
                     url: window.location.href, // the endpoint,commonly same url
                     type: "POST", // http method
@@ -763,7 +703,6 @@
             for (var i = 0; i < array.length; i++) {
                 if (array[i].checked) {
                     time_date_login.push(array[i].id);
-                    console.log("PARENT", array[i].id, array[i].id.split(" ")[1]);
                 }
 
             }
@@ -777,7 +716,7 @@
 //                            csrfmiddlewaretoken: csrftoken,
                         time_date_login: time_date_login,
                         delete_admin: "True",
-                        body_message:  $("#comment_admin").val(),
+                        body_message: $("#comment_admin").val(),
 
                     },
                     // when success then get data from response and re-render data on page
@@ -804,19 +743,15 @@
 
             var array = $("#modal_table tr td");
 
-            console.log(array);
-
 
             var time_date_login = [];
 
             for (var i = 0; i < array.length; i++) {
                 if (i % 2 == 1) {
-                    console.log(array[i].id);
                     time_date_login.push(array[i].id);
                 }
             }
 
-            console.log(time_date_login);
 
             function delete_from_dtb_user() {
 //                    var csrftoken = getCookie('csrftoken');
@@ -832,7 +767,6 @@
                     // when success then get data from response and re-render data on page
                     success: function (response) {
                         var has = response["has"];
-                        console.log("HAS:", has);
                         if (has) {
                             $("#modal_window_user").modal('hide');
                             get_reservations_from_dtb();
@@ -867,7 +801,6 @@
 
                 if (i % 2 == 1) {
 
-                    console.log(array, array[i]);
                     try {
                         notes.push(array[i].children[0].value);
                         time_date_login.push(array[i].id);
@@ -876,12 +809,9 @@
                     }
                 }
             }
-            console.log("NOTES:", notes)
 
-            console.log(time_date_login);
 
             function update_dtb_user_note() {
-//                    var csrftoken = getCookie('csrftoken');
                 $.ajax({
                     url: window.location.href, // the endpoint,commonly same url
                     type: "POST", // http method
@@ -895,7 +825,6 @@
                     // when success then get data from response and re-render data on page
                     success: function (response) {
 
-                        console.log(response);
 
                         {#                        $("#modal_window_user").modal('hide');#}
 
@@ -929,7 +858,6 @@
             $('#datepicker').datepicker("setDate", date);
             var new_date = $('#datepicker').datepicker('getDate');
             var day = new_date.getDay();
-            console.log(new_date, day);
             if (day == 1 || (day == 5) && prev_day != 4) {
                 get_reservations_from_dtb();
             }
@@ -943,7 +871,6 @@
             $('#datepicker').datepicker("setDate", date);
             var new_date = $('#datepicker').datepicker('getDate');
             var day = new_date.getDay();
-            console.log(new_date, day);
             if ((day == 1 && next_day != 2 ) || day == 5) {
                 get_reservations_from_dtb();
             }

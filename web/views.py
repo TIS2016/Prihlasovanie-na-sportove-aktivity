@@ -10,10 +10,10 @@ from django.template import Context, loader
 from web.models import Reservation, Room, SchoolUser
 from django.core.mail import EmailMessage
 
+
 @register.filter
 def multiply(dictionary, value):
     return value * dictionary
-
 
 
 # login imports
@@ -49,7 +49,7 @@ class UserRegisterView(View):
             user.set_password(password)
             user.save()
 
-            #returns User objects if credentials are correct
+            # returns User objects if credentials are correct
 
             user = authenticate(username=username, password=password)
             if user is not None:
@@ -82,14 +82,13 @@ class UserLoginView(View):
                 return redirect('/domov/hala/')
             else:
                 return TemplateResponse(request, self.template_name, {'form': form, 'invalid': True})
+        else:
+            return TemplateResponse(request, self.template_name, {'form': form})
 
 
 def _logout(request):
     logout(request)
     return redirect('../')
-
-
-
 
 
 TIMES = [
@@ -156,8 +155,6 @@ def hala(request):
     }
     if request.method == 'POST':
         if request.is_ajax():
-            # print("DATA", request.POST)
-
             # save new reservations to the database
             if request.POST.get('save'):
 
@@ -165,19 +162,12 @@ def hala(request):
                     username = request.user.username
                     first_name = request.user.first_name
                     last_name = request.user.last_name
-                    print("USERNAME:",username)
 
                     times = request.POST.getlist('times[]')
                     notes = request.POST.getlist('notes[]')
                     dates = request.POST.getlist('dates[]')
 
-
-
-                    print("DATES", request.POST)
-
                     for i in range(len(times)):
-                        print(times[i], times[i])
-
                         time = unicode(times[i]).strip().split()
 
                         Reservation.objects.create(login=username, name=first_name, surname=last_name, room=room,
@@ -188,7 +178,9 @@ def hala(request):
                     }
                     return JsonResponse(response_data)
                 else:
-                    print("not_authentificated")
+                    # not_authentificated
+                    pass
+
 
             elif request.POST.get('save_block'):
 
@@ -201,21 +193,15 @@ def hala(request):
                     notes = request.POST.getlist('notes[]')
                     dates = request.POST.getlist('dates[]')
 
-                    print("DATES", request.POST)
-
                     number = None
                     not_empty = False
 
                     for i in range(len(times)):
-                        print(times[i], times[i])
 
                         time = unicode(times[i]).strip().split()
 
-                        number = Reservation.objects.filter(room=room, date=unicode(dates[i]),time=unicode(time[1])).count()
-
-
-                        #print("NUMBEEEEEEEER", number)
-
+                        number = Reservation.objects.filter(room=room, date=unicode(dates[i]),
+                                                            time=unicode(time[1])).count()
                         if number > 0:
                             not_empty = True
 
@@ -228,12 +214,12 @@ def hala(request):
 
                     else:
                         for i in range(len(times)):
-                            print(times[i], times[i])
-
                             time = unicode(times[i]).strip().split()
 
                             Reservation.objects.create(login=username, name=first_name, surname=last_name, room=room,
-                                                   date=unicode(dates[i]), time=unicode(time[1]), note=unicode("Zablokovany Termin: " + notes[i]), is_blocked="True")
+                                                       date=unicode(dates[i]), time=unicode(time[1]),
+                                                       note=unicode("Zablokovany Termin: " + notes[i]),
+                                                       is_blocked="True")
 
                         response_data = {
                             "message": "DONE",
@@ -267,7 +253,6 @@ def hala(request):
                 if request.user.is_authenticated():
                     username = request.user.username
                     has = False
-                    print("request.POST", request.POST)
 
                     time_date_login = request.POST.getlist('time_date_login[]')
 
@@ -276,7 +261,7 @@ def hala(request):
                         if split[2] == username:
                             has = True
                             Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
-                                                   time=unicode(split[0])).delete()
+                                                       time=unicode(split[0])).delete()
 
                     response_data = {
                         "message": "DONE",
@@ -288,18 +273,16 @@ def hala(request):
                 if request.user.is_authenticated():
                     username = request.user.username
                     has = False
-                    print("request.POST", request.POST)
 
                     time_date_login = request.POST.getlist('time_date_login[]')
                     notes = request.POST.getlist('notes[]')
 
                     for i in range(len(notes)):
                         split = time_date_login[i].split(' ')
-                        print("SPLIT2", split[2])
                         if split[2] == username:
                             has = True
                             Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
-                                                   time=unicode(split[0])).update(note=notes[i])
+                                                       time=unicode(split[0])).update(note=notes[i])
 
                     response_data = {
                         "message": "DONE",
@@ -316,23 +299,11 @@ def hala(request):
                         school_user = SchoolUser.objects.get(id=request.user.id)
                         is_student = school_user.function
 
-
-                    # is_student = None
-                    # if not request.user.is_superuser:
-                    #     school_user = SchoolUser.objects.get(id=request.user.id)
-                    #     print("BENG",school_user)
-                    #     if school_user is not None:
-                    #         is_student = school_user.function
-
-
-
                     mon = unicode(request.POST.get('d1')).strip().split()
                     tue = unicode(request.POST.get('d2')).strip().split()
                     wed = unicode(request.POST.get('d3')).strip().split()
                     thu = unicode(request.POST.get('d4')).strip().split()
                     fri = unicode(request.POST.get('d5')).strip().split()
-
-                    # print(months.get(mon[1]), mon[2], mon[3])
 
                     mon = "{}-{}-{}".format(mon[3], MONTHS.get(mon[1]), mon[2])
                     tue = "{}-{}-{}".format(tue[3], MONTHS.get(tue[1]), tue[2])
@@ -340,23 +311,17 @@ def hala(request):
                     thu = "{}-{}-{}".format(thu[3], MONTHS.get(thu[1]), thu[2])
                     fri = "{}-{}-{}".format(fri[3], MONTHS.get(fri[1]), fri[2])
 
-                    # print(mon)
-                    # print(fri)
-
                     result = list()
                     blocked = list()
                     for time in TIMES:
                         for day_date in [mon, tue, wed, thu, fri]:
                             r = Reservation.objects.filter(date=day_date, time=time, room=room)
                             result.append(r.count())
-                            # print(r.values_list('is_blocked', flat=True))
-
 
                             if len(r.values_list('is_blocked', flat=True)) > 0:
                                 blocked.append(r.values_list('is_blocked', flat=True)[0])
                             else:
                                 blocked.append(False)
-
 
                     response_data = {
                         "reservations": result,
@@ -366,8 +331,8 @@ def hala(request):
                         "is_student": is_student,
 
                     }
-                    return JsonResponse(response_data)  # Get goes here
-
+                    return JsonResponse(response_data)
+    # Get goes here
     return TemplateResponse(request, 'web/hala.html', context)
 
 
@@ -390,7 +355,6 @@ def hala_terminy(request):
             }
             return JsonResponse(response_data)
             # # Get goes here
-            # return TemplateResponse(request, 'web/hala_terminy.html', context)
 
 
 @csrf_exempt
@@ -401,7 +365,6 @@ def hala_termin(request, termin_id):
     if request.is_ajax():
         if request.user.is_authenticated():
             username = request.user.username
-            print("datum", request.POST.get('date'))
 
             date = unicode(request.POST.get('date')).strip().split()
 
@@ -418,9 +381,6 @@ def hala_termin(request, termin_id):
 
             res_allow_update = [r.login == username for r in res]
 
-            print("names", res_names)
-            print("notes", res_notes)
-
             response_data = {
                 "times": TIMES,
                 "res_names": res_names,
@@ -429,12 +389,12 @@ def hala_termin(request, termin_id):
                 "res_times": res_times,
                 "res_notes": res_notes,
                 "number": res.count(),
-                "res_allow_update" : res_allow_update,
+                "res_allow_update": res_allow_update,
                 "is_admin": request.user.is_staff
             }
             return JsonResponse(response_data)
-        # # Get goes here
-        # return TemplateResponse(request, 'web/hala_termin.html', context)
+            # # Get goes here
+            # return TemplateResponse(request, 'web/hala_termin.html', context)
 
 
 # <-----------------------------> POSILNOVNA <-------------------------------------->
@@ -451,8 +411,6 @@ def posilnovna(request):
     }
     if request.method == 'POST':
         if request.is_ajax():
-            # print("DATA", request.POST)
-
             # save new reservations to the database
             if request.POST.get('save'):
 
@@ -460,17 +418,12 @@ def posilnovna(request):
                     username = request.user.username
                     first_name = request.user.first_name
                     last_name = request.user.last_name
-                    print("USERNAME:", username)
 
                     times = request.POST.getlist('times[]')
                     notes = request.POST.getlist('notes[]')
                     dates = request.POST.getlist('dates[]')
 
-                    print("DATES", request.POST)
-
                     for i in range(len(times)):
-                        print(times[i], times[i])
-
                         time = unicode(times[i]).strip().split()
 
                         Reservation.objects.create(login=username, name=first_name, surname=last_name, room=room,
@@ -481,7 +434,8 @@ def posilnovna(request):
                     }
                     return JsonResponse(response_data)
                 else:
-                    print("not_authentificated")
+                    # not_authentificated
+                    pass
 
             elif request.POST.get('save_block'):
 
@@ -494,20 +448,15 @@ def posilnovna(request):
                     notes = request.POST.getlist('notes[]')
                     dates = request.POST.getlist('dates[]')
 
-                    print("DATES", request.POST)
-
                     number = None
                     not_empty = False
 
                     for i in range(len(times)):
-                        print(times[i], times[i])
 
                         time = unicode(times[i]).strip().split()
 
                         number = Reservation.objects.filter(room=room, date=unicode(dates[i]),
                                                             time=unicode(time[1])).count()
-
-                        print("NUMBEEEEEEEER", number)
 
                         if number > 0:
                             not_empty = True
@@ -521,8 +470,6 @@ def posilnovna(request):
 
                     else:
                         for i in range(len(times)):
-                            print(times[i], times[i])
-
                             time = unicode(times[i]).strip().split()
 
                             Reservation.objects.create(login=username, name=first_name, surname=last_name, room=room,
@@ -537,9 +484,6 @@ def posilnovna(request):
                         return JsonResponse(response_data)
 
             elif request.POST.get('delete_admin'):
-
-                #print("request.POST", request.POST)
-
                 list_email_to_send = list()
                 time_date_login = request.POST.getlist('time_date_login[]')
                 body_message = request.POST.get('body_message')
@@ -565,7 +509,6 @@ def posilnovna(request):
                 if request.user.is_authenticated():
                     username = request.user.username
                     has = False
-                    print("request.POST", request.POST)
 
                     time_date_login = request.POST.getlist('time_date_login[]')
 
@@ -586,14 +529,12 @@ def posilnovna(request):
                 if request.user.is_authenticated():
                     username = request.user.username
                     has = False
-                    print("request.POST", request.POST)
 
                     time_date_login = request.POST.getlist('time_date_login[]')
                     notes = request.POST.getlist('notes[]')
 
                     for i in range(len(notes)):
                         split = time_date_login[i].split(' ')
-                        print("SPLIT2", split[2])
                         if split[2] == username:
                             has = True
                             Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
@@ -614,22 +555,11 @@ def posilnovna(request):
                         school_user = SchoolUser.objects.get(id=request.user.id)
                         is_student = school_user.function
 
-                    # is_student = None
-                    # if not request.user.is_superuser:
-                    #     school_user = SchoolUser.objects.get(id=request.user.id)
-                    #     print("BENG",school_user)
-                    #     if school_user is not None:
-                    #         is_student = school_user.function
-
-
-
                     mon = unicode(request.POST.get('d1')).strip().split()
                     tue = unicode(request.POST.get('d2')).strip().split()
                     wed = unicode(request.POST.get('d3')).strip().split()
                     thu = unicode(request.POST.get('d4')).strip().split()
                     fri = unicode(request.POST.get('d5')).strip().split()
-
-                    # print(months.get(mon[1]), mon[2], mon[3])
 
                     mon = "{}-{}-{}".format(mon[3], MONTHS.get(mon[1]), mon[2])
                     tue = "{}-{}-{}".format(tue[3], MONTHS.get(tue[1]), tue[2])
@@ -637,17 +567,12 @@ def posilnovna(request):
                     thu = "{}-{}-{}".format(thu[3], MONTHS.get(thu[1]), thu[2])
                     fri = "{}-{}-{}".format(fri[3], MONTHS.get(fri[1]), fri[2])
 
-                    # print(mon)
-                    # print(fri)
-
                     result = list()
                     blocked = list()
                     for time in TIMES:
                         for day_date in [mon, tue, wed, thu, fri]:
                             r = Reservation.objects.filter(date=day_date, time=time, room=room)
                             result.append(r.count())
-                            # print(r.values_list('is_blocked', flat=True))
-
 
                             if len(r.values_list('is_blocked', flat=True)) > 0:
                                 blocked.append(r.values_list('is_blocked', flat=True)[0])
@@ -693,7 +618,6 @@ def posilnovna_termin(request, termin_id):
     if request.is_ajax():
         if request.user.is_authenticated():
             username = request.user.username
-            print("datum", request.POST.get('date'))
 
             date = unicode(request.POST.get('date')).strip().split()
 
@@ -709,9 +633,6 @@ def posilnovna_termin(request, termin_id):
             res_logins = [r.login for r in res]
 
             res_allow_update = [r.login == username for r in res]
-
-            print("names", res_names)
-            print("notes", res_notes)
 
             response_data = {
                 "times": TIMES,
@@ -741,7 +662,6 @@ def stena(request):
     }
     if request.method == 'POST':
         if request.is_ajax():
-            # print("DATA", request.POST)
 
             # save new reservations to the database
             if request.POST.get('save'):
@@ -750,17 +670,12 @@ def stena(request):
                     username = request.user.username
                     first_name = request.user.first_name
                     last_name = request.user.last_name
-                    print("USERNAME:", username)
 
                     times = request.POST.getlist('times[]')
                     notes = request.POST.getlist('notes[]')
                     dates = request.POST.getlist('dates[]')
 
-                    print("DATES", request.POST)
-
                     for i in range(len(times)):
-                        print(times[i], times[i])
-
                         time = unicode(times[i]).strip().split()
 
                         Reservation.objects.create(login=username, name=first_name, surname=last_name, room=room,
@@ -771,7 +686,8 @@ def stena(request):
                     }
                     return JsonResponse(response_data)
                 else:
-                    print("not_authentificated")
+                    # not_authentificated
+                    pass
 
             elif request.POST.get('save_block'):
 
@@ -784,20 +700,15 @@ def stena(request):
                     notes = request.POST.getlist('notes[]')
                     dates = request.POST.getlist('dates[]')
 
-                    print("DATES", request.POST)
-
                     number = None
                     not_empty = False
 
                     for i in range(len(times)):
-                        print(times[i], times[i])
 
                         time = unicode(times[i]).strip().split()
 
                         number = Reservation.objects.filter(room=room, date=unicode(dates[i]),
                                                             time=unicode(time[1])).count()
-
-                        print("NUMBEEEEEEEER", number)
 
                         if number > 0:
                             not_empty = True
@@ -811,8 +722,6 @@ def stena(request):
 
                     else:
                         for i in range(len(times)):
-                            print(times[i], times[i])
-
                             time = unicode(times[i]).strip().split()
 
                             Reservation.objects.create(login=username, name=first_name, surname=last_name, room=room,
@@ -828,12 +737,9 @@ def stena(request):
 
             elif request.POST.get('delete_admin'):
 
-                #print("request.POST", request.POST)
-
                 list_email_to_send = list()
                 time_date_login = request.POST.getlist('time_date_login[]')
                 body_message = request.POST.get('body_message')
-
 
                 for i in range(len(time_date_login)):
                     split = time_date_login[i].split(' ')
@@ -856,7 +762,6 @@ def stena(request):
                 if request.user.is_authenticated():
                     username = request.user.username
                     has = False
-                    print("request.POST", request.POST)
 
                     time_date_login = request.POST.getlist('time_date_login[]')
 
@@ -877,14 +782,12 @@ def stena(request):
                 if request.user.is_authenticated():
                     username = request.user.username
                     has = False
-                    print("request.POST", request.POST)
 
                     time_date_login = request.POST.getlist('time_date_login[]')
                     notes = request.POST.getlist('notes[]')
 
                     for i in range(len(notes)):
                         split = time_date_login[i].split(' ')
-                        print("SPLIT2", split[2])
                         if split[2] == username:
                             has = True
                             Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
@@ -905,22 +808,11 @@ def stena(request):
                         school_user = SchoolUser.objects.get(id=request.user.id)
                         is_student = school_user.function
 
-                    # is_student = None
-                    # if not request.user.is_superuser:
-                    #     school_user = SchoolUser.objects.get(id=request.user.id)
-                    #     print("BENG",school_user)
-                    #     if school_user is not None:
-                    #         is_student = school_user.function
-
-
-
                     mon = unicode(request.POST.get('d1')).strip().split()
                     tue = unicode(request.POST.get('d2')).strip().split()
                     wed = unicode(request.POST.get('d3')).strip().split()
                     thu = unicode(request.POST.get('d4')).strip().split()
                     fri = unicode(request.POST.get('d5')).strip().split()
-
-                    # print(months.get(mon[1]), mon[2], mon[3])
 
                     mon = "{}-{}-{}".format(mon[3], MONTHS.get(mon[1]), mon[2])
                     tue = "{}-{}-{}".format(tue[3], MONTHS.get(tue[1]), tue[2])
@@ -928,17 +820,12 @@ def stena(request):
                     thu = "{}-{}-{}".format(thu[3], MONTHS.get(thu[1]), thu[2])
                     fri = "{}-{}-{}".format(fri[3], MONTHS.get(fri[1]), fri[2])
 
-                    # print(mon)
-                    # print(fri)
-
                     result = list()
                     blocked = list()
                     for time in TIMES:
                         for day_date in [mon, tue, wed, thu, fri]:
                             r = Reservation.objects.filter(date=day_date, time=time, room=room)
                             result.append(r.count())
-                            # print(r.values_list('is_blocked', flat=True))
-
 
                             if len(r.values_list('is_blocked', flat=True)) > 0:
                                 blocked.append(r.values_list('is_blocked', flat=True)[0])
@@ -984,7 +871,6 @@ def stena_termin(request, termin_id):
     if request.is_ajax():
         if request.user.is_authenticated():
             username = request.user.username
-            print("datum", request.POST.get('date'))
 
             date = unicode(request.POST.get('date')).strip().split()
 
@@ -1000,9 +886,6 @@ def stena_termin(request, termin_id):
             res_logins = [r.login for r in res]
 
             res_allow_update = [r.login == username for r in res]
-
-            print("names", res_names)
-            print("notes", res_notes)
 
             response_data = {
                 "times": TIMES,
@@ -1032,8 +915,6 @@ def sauna(request):
     }
     if request.method == 'POST':
         if request.is_ajax():
-            # print("DATA", request.POST)
-
             # save new reservations to the database
             if request.POST.get('save'):
 
@@ -1041,17 +922,12 @@ def sauna(request):
                     username = request.user.username
                     first_name = request.user.first_name
                     last_name = request.user.last_name
-                    print("USERNAME:", username)
 
                     times = request.POST.getlist('times[]')
                     notes = request.POST.getlist('notes[]')
                     dates = request.POST.getlist('dates[]')
 
-                    print("DATES", request.POST)
-
                     for i in range(len(times)):
-                        print(times[i], times[i])
-
                         time = unicode(times[i]).strip().split()
 
                         Reservation.objects.create(login=username, name=first_name, surname=last_name, room=room,
@@ -1062,7 +938,8 @@ def sauna(request):
                     }
                     return JsonResponse(response_data)
                 else:
-                    print("not_authentificated")
+                    # not_authentificated
+                    pass
 
             elif request.POST.get('save_block'):
 
@@ -1075,20 +952,15 @@ def sauna(request):
                     notes = request.POST.getlist('notes[]')
                     dates = request.POST.getlist('dates[]')
 
-                    print("DATES", request.POST)
-
                     number = None
                     not_empty = False
 
                     for i in range(len(times)):
-                        print(times[i], times[i])
 
                         time = unicode(times[i]).strip().split()
 
                         number = Reservation.objects.filter(room=room, date=unicode(dates[i]),
                                                             time=unicode(time[1])).count()
-
-                        print("NUMBEEEEEEEER", number)
 
                         if number > 0:
                             not_empty = True
@@ -1102,8 +974,6 @@ def sauna(request):
 
                     else:
                         for i in range(len(times)):
-                            print(times[i], times[i])
-
                             time = unicode(times[i]).strip().split()
 
                             Reservation.objects.create(login=username, name=first_name, surname=last_name, room=room,
@@ -1118,8 +988,6 @@ def sauna(request):
                         return JsonResponse(response_data)
 
             elif request.POST.get('delete_admin'):
-
-                #print("request.POST", request.POST)
 
                 list_email_to_send = list()
                 time_date_login = request.POST.getlist('time_date_login[]')
@@ -1146,7 +1014,6 @@ def sauna(request):
                 if request.user.is_authenticated():
                     username = request.user.username
                     has = False
-                    print("request.POST", request.POST)
 
                     time_date_login = request.POST.getlist('time_date_login[]')
 
@@ -1167,14 +1034,12 @@ def sauna(request):
                 if request.user.is_authenticated():
                     username = request.user.username
                     has = False
-                    print("request.POST", request.POST)
 
                     time_date_login = request.POST.getlist('time_date_login[]')
                     notes = request.POST.getlist('notes[]')
 
                     for i in range(len(notes)):
                         split = time_date_login[i].split(' ')
-                        print("SPLIT2", split[2])
                         if split[2] == username:
                             has = True
                             Reservation.objects.filter(login=unicode(split[2]), room=room, date=unicode(split[1]),
@@ -1195,22 +1060,11 @@ def sauna(request):
                         school_user = SchoolUser.objects.get(id=request.user.id)
                         is_student = school_user.function
 
-                    # is_student = None
-                    # if not request.user.is_superuser:
-                    #     school_user = SchoolUser.objects.get(id=request.user.id)
-                    #     print("BENG",school_user)
-                    #     if school_user is not None:
-                    #         is_student = school_user.function
-
-
-
                     mon = unicode(request.POST.get('d1')).strip().split()
                     tue = unicode(request.POST.get('d2')).strip().split()
                     wed = unicode(request.POST.get('d3')).strip().split()
                     thu = unicode(request.POST.get('d4')).strip().split()
                     fri = unicode(request.POST.get('d5')).strip().split()
-
-                    # print(months.get(mon[1]), mon[2], mon[3])
 
                     mon = "{}-{}-{}".format(mon[3], MONTHS.get(mon[1]), mon[2])
                     tue = "{}-{}-{}".format(tue[3], MONTHS.get(tue[1]), tue[2])
@@ -1218,17 +1072,12 @@ def sauna(request):
                     thu = "{}-{}-{}".format(thu[3], MONTHS.get(thu[1]), thu[2])
                     fri = "{}-{}-{}".format(fri[3], MONTHS.get(fri[1]), fri[2])
 
-                    # print(mon)
-                    # print(fri)
-
                     result = list()
                     blocked = list()
                     for time in TIMES:
                         for day_date in [mon, tue, wed, thu, fri]:
                             r = Reservation.objects.filter(date=day_date, time=time, room=room)
                             result.append(r.count())
-                            # print(r.values_list('is_blocked', flat=True))
-
 
                             if len(r.values_list('is_blocked', flat=True)) > 0:
                                 blocked.append(r.values_list('is_blocked', flat=True)[0])
@@ -1274,7 +1123,6 @@ def sauna_termin(request, termin_id):
     if request.is_ajax():
         if request.user.is_authenticated():
             username = request.user.username
-            print("datum", request.POST.get('date'))
 
             date = unicode(request.POST.get('date')).strip().split()
 
@@ -1290,10 +1138,6 @@ def sauna_termin(request, termin_id):
             res_logins = [r.login for r in res]
 
             res_allow_update = [r.login == username for r in res]
-
-            print("names", res_names)
-            print("notes", res_notes)
-
             response_data = {
                 "times": TIMES,
                 "res_names": res_names,

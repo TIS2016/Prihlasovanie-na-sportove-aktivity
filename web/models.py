@@ -70,10 +70,7 @@ class Reservation(models.Model):
         db_table = 'reservation'
 
 
-
-
 class SchoolUser(User):
-
     function = models.BooleanField()
 
     def __str__(self):

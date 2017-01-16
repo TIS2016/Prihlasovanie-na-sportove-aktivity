@@ -17,6 +17,3 @@ class SchoolUserAdmin(admin.ModelAdmin):
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Reservation, ReservationAdmin)
 admin.site.register(SchoolUser, SchoolUserAdmin)
-
-
-
